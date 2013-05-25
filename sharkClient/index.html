@@ -15,11 +15,13 @@
     <script src="GuessView.js"></script>
     <script src="GuessesView.js"></script>
     <script src="GameView.js"></script>
+    <script src="AppView.js"></script>
   </head>
   <body>
-    <div class="row"></div>
     <script>
-      var g = new Game({player1: 'nick', player2: 'tucker'});
+      var a = new App({name: 'nick'});
+      a.newGame('tucker');
+      var g = a.get('currGame');
       g.setWord('nick', 'happy');
       g.setWord('tucker', 'paste');
       g.addGuess('nick', 'pests');
@@ -27,8 +29,8 @@
       g.addGuess('nick', 'lives');
       g.addGuess('tucker', 'minds');
       g.addGuess('nick', 'peats');
-      var gv = new GameView({model: g});
-      $('.row').append(gv.render());
+      var av = new AppView({model: a});
+      $('body').append(av.render());
     </script>
   </body>
 </html>

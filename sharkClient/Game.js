@@ -23,5 +23,8 @@ var Game = Backbone.Model.extend ({
     } else {
       new Error('player is not in the game');
     }
+  },
+  validWord: function(word){
+
   }
 });
