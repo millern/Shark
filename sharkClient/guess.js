@@ -12,5 +12,6 @@ var Guess = Backbone.Model.extend({
     return _(guessArr).reduce(function(memo,item){
       return wordHash.hasOwnProperty(item) ? ++memo : memo;
     },0);
+    //TODO: trigger event if score is 5
    }
 });
