@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="../lib/bootstrap.min.css">
     <script src="../lib/underscore.js"></script>
     <script src="../lib/jquery.js"></script>
     <script src="../lib/backbone.js"></script>
@@ -11,7 +12,23 @@
     <script src="Game.js"></script>
     <script src="Games.js"></script>
     <script src="App.js"></script>
+    <script src="GuessView.js"></script>
+    <script src="GuessesView.js"></script>
+    <script src="GameView.js"></script>
   </head>
   <body>
+    <div class="row"></div>
+    <script>
+      var g = new Game({player1: 'nick', player2: 'tucker'});
+      g.setWord('nick', 'happy');
+      g.setWord('tucker', 'paste');
+      g.addGuess('nick', 'pests');
+      g.addGuess('tucker', 'heaps');
+      g.addGuess('nick', 'lives');
+      g.addGuess('tucker', 'minds');
+      g.addGuess('nick', 'peats');
+      var gv = new GameView({model: g});
+      $('.row').append(gv.render());
+    </script>
   </body>
 </html>
