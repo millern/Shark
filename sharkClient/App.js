@@ -1,17 +1,13 @@
 var App = Backbone.Model.extend({
   initialize: function(params){
     this.set('player', params.name);
-    var games = new Games();
     var self = this;
-    games.fetch({success: function(){
-      self.set('games', games);
-      self.set('currGame',games.last());
+    socket.emit('fetch');
+    socket.on('updateClient',function(data){
+      self.set('games',new Games(data) || new Games());
+      self.set('currGame',self.get('games') ? self.get('games').last() : self.newGame('tucker'));
       self.trigger("ready");
-    }, error: function(){
-      self.set('games', games);
-      self.newGame('tucker');
-      self.trigger('ready');
-    }});
+    });
   },
   newGame: function(player2){
     console.log('starting new game');
@@ -21,6 +17,6 @@ var App = Backbone.Model.extend({
     this.get('currGame').on('gameOver',function(){
       this.trigger('gameOver');
     },this);
-    this.get('games').sync('update', this.get('games'));
+    socket.emit('update',this.get('games'));
   }
 });

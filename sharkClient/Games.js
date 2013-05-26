@@ -3,7 +3,7 @@ var Games = Backbone.Collection.extend({
   url: '/games',
   initialize: function(){
     this.on('syncGame',function(){
-      this.sync('update', this);
+      socket.emit('update', this);
     }, this);
   }
 });

@@ -6,6 +6,7 @@
     <script src="../lib/underscore.js"></script>
     <script src="../lib/jquery.js"></script>
     <script src="../lib/backbone.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="Guess.js"></script>
     <script src="Guesses.js"></script>
     <script src="Game.js"></script>
@@ -18,10 +19,8 @@
   </head>
   <body>
     <script>
+      window.socket = io.connect('http://10.0.1.23:8080')
       var a = new App({name: 'nick'});
-      // a.newGame('tucker');
-      // a.get('currGame').setWord('tucker','lynx');
-      // a.get('currGame').setWord('nick','zips');
       var av = new AppView({model: a});
       a.on('ready', function(){
         $('body').append(av.render());
