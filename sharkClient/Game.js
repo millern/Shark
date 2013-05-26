@@ -6,19 +6,12 @@ var Game = Backbone.Model.extend ({
     this.set('word2Guesses', new Guesses());
     this.set('guessing', params.player1);
     this.set('winner',null);
+
     this.get('word1Guesses').on('add',function(guess){
-      if(guess.get('score') === 4){
-      console.log('player2 won');
-      this.set('winner',this.get('player2'));
-      this.trigger('gameOver');
-      }
+      this.handleGuess(guess,this.get("player2"));
     },this);
     this.get('word2Guesses').on('add',function(guess){
-      if(guess.get('score') === 4){
-        console.log('player1 won');
-        this.set('winner',this.get('player1'));
-        this.trigger('gameOver');
-      }
+      this.handleGuess(guess,this.get("player1"));
     },this);
   },
   setWord: function(player, word){
@@ -38,6 +31,23 @@ var Game = Backbone.Model.extend ({
     } else {
       new Error('player is not in the game');
     }
+  },
+  handleGuess: function(guess, guesser){
+    if(guess.get('score') === 4){
+      console.log(guesser, ' won');
+      this.set('winner',guesser);
+      this.trigger('gameOver');
+    } else {
+      console.log("new turn");
+      this.toggleTurn();
+      this.trigger('newTurn');
+    }
+  },
+  toggleTurn: function(){
+    this.set('guessing',this.get('guessing')===this.get('player1') ?
+                        this.get('player2') :
+                        this.get('player1')
+            );
   },
   validWord: function(word){
 

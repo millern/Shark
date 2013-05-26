@@ -10,6 +10,7 @@ var App = Backbone.Model.extend({
     this.set('currGame',game);
     this.set('gameState',"alive");
     this.get('currGame').on('gameOver',function(){
+      this.trigger('gameOver');
       this.set('gameState','dead');
     },this);
   }
