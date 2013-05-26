@@ -12,6 +12,10 @@ var GameView = Backbone.View.extend({
     this.model.on('change:word1 change:word2', function(){
       this.render();
     },this);
+    this.model.on('change:winner', function(){
+      this.render();
+    },this);
+
   },
 
   events: {
@@ -43,23 +47,30 @@ var GameView = Backbone.View.extend({
 
   render: function(){
     this.$el.children().detach();
-    $rightSide = $('<div class="rightSide span4"></div>').append(
+    $gameState = $('<div class="row"></div>');
+    $('<div class="gameState span2 offset4"></div>')
+      .text(this.model.get('winner') ?
+        'winner: ' + this.model.get('winner') :
+        'inprogress'
+        ).appendTo($gameState);
+    $gamePlay = $('<div class="row"></div>');
+    $rightSide = $('<div class="rightSide span4 offset1"></div>').append(
       $('<input class="set" placeholder="set word"/>'),
       $('<div></div>').text(this.model.get('player1')),
       $('<input class="guess" placeholder="guess word"/>'),
       $('<div></div>').text(this.model.get('word1')),
       new GuessesView({collection: this.model.get('word1Guesses')}).render()
-      );
+      ).appendTo($gamePlay);
     $leftSide = $('<div class="leftSide span4"></div>').append(
       $('<input class="set" placeholder="set word"/>'),
       $('<div></div>').text(this.model.get('player2')),
       $('<input class="guess" placeholder="guess word"/>'),
       $('<div></div>').text(this.model.get('word2')),
       new GuessesView({collection: this.model.get('word2Guesses')}).render()
-      );
+      ).appendTo($gamePlay);
     return this.$el.append([
-      $leftSide,
-      $rightSide
+      $gameState,
+      $gamePlay
       ]);
   }
 });

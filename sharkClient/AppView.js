@@ -1,6 +1,5 @@
 var AppView = Backbone.View.extend({
   tagName: 'div',
-  className: 'row',
 
   render: function(){
     return this.$el.append(

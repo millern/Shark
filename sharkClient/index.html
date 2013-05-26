@@ -2,6 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="../lib/underscore.js"></script>
     <script src="../lib/jquery.js"></script>
     <script src="../lib/backbone.js"></script>
@@ -21,14 +22,6 @@
     <script>
       var a = new App({name: 'nick'});
       a.newGame('tucker');
-      var g = a.get('currGame');
-      g.setWord('nick', 'happy');
-      g.setWord('tucker', 'paste');
-      g.addGuess('nick', 'pests');
-      g.addGuess('tucker', 'heaps');
-      g.addGuess('nick', 'lives');
-      g.addGuess('tucker', 'minds');
-      g.addGuess('nick', 'peats');
       var av = new AppView({model: a});
       $('body').append(av.render());
     </script>
