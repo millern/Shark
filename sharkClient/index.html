@@ -6,8 +6,6 @@
     <script src="../lib/underscore.js"></script>
     <script src="../lib/jquery.js"></script>
     <script src="../lib/backbone.js"></script>
-    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
-    <script src="../lib/backbone-firebase.js"></script>
     <script src="Guess.js"></script>
     <script src="Guesses.js"></script>
     <script src="Game.js"></script>
@@ -21,11 +19,13 @@
   <body>
     <script>
       var a = new App({name: 'nick'});
-      a.newGame('tucker');
-      a.get('currGame').setWord('tucker','lynx');
-      a.get('currGame').setWord('nick','zips');
+      // a.newGame('tucker');
+      // a.get('currGame').setWord('tucker','lynx');
+      // a.get('currGame').setWord('nick','zips');
       var av = new AppView({model: a});
-      $('body').append(av.render());
+      a.on('ready', function(){
+        $('body').append(av.render());
+      });
     </script>
   </body>
 </html>

@@ -16,7 +16,7 @@ var AppView = Backbone.View.extend({
     this.$el.children().detach();
     var $btn = $('<button class="newGame offset4">New Game</button>');
     console.log("rendering from app view");
-    console.log(this.model.get("currGame").get("winner"));
+    // console.log(this.model.get("currGame").get("winner"));
     return this.$el.append(
       (new GameView({model: this.model.get('currGame')})).render(),
       $('<div class="row"></div>')
