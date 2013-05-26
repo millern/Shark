@@ -6,7 +6,7 @@ var GameView = Backbone.View.extend({
     this.model.on('change:word1 change:word2',function(){
       this.render();
     },this);
-    this.model.on('newTurn',function(){
+    this.model.on('newTurn gameOver',function(){
       this.render();
     },this);
   },

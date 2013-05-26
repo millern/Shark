@@ -9,11 +9,14 @@ var Game = Backbone.Model.extend ({
 
     this.get('word1Guesses').on('add',function(guess){
       this.handleGuess(guess,this.get("player2"));
-      this.trigger('newGuess');
+      this.trigger('syncGame');
     },this);
     this.get('word2Guesses').on('add',function(guess){
       this.handleGuess(guess,this.get("player1"));
-      this.trigger('newGuess');
+      this.trigger('syncGame');
+    },this);
+    this.on('change:word1 change:word2',function(){
+      this.trigger('syncGame');
     },this);
   },
   setWord: function(player, word){
