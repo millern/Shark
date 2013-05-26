@@ -51,7 +51,7 @@ var GameView = Backbone.View.extend({
     $('<div class="gameState span2 offset4"></div>')
       .text(this.model.get('winner') ?
         'winner: ' + this.model.get('winner') :
-        'inprogress'
+        'In Progress'
         ).appendTo($gameState);
     $gamePlay = $('<div class="row"></div>');
     $rightSide = $('<div class="rightSide span4 offset1"></div>').append(
