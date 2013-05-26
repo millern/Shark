@@ -13,7 +13,7 @@ var Game = Backbone.Model.extend ({
       this.trigger('gameOver');
       }
     },this);
-    this.get('word2Guesses').on('gameOver',function(guess){
+    this.get('word2Guesses').on('add',function(guess){
       if(guess.get('score') === 4){
         console.log('player1 won');
         this.set('winner',this.get('player1'));
