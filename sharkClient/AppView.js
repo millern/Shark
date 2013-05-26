@@ -8,7 +8,7 @@ var AppView = Backbone.View.extend({
   },
   events: {
     'click button' : function(){
-      this.model.newGame('tucker');
+      this.model.newGame(prompt('opponent'));
       this.render();
     }
   },

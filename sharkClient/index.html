@@ -20,7 +20,7 @@
   <body>
     <script>
       window.socket = io.connect('http://10.0.1.23:8080')
-      var a = new App({name: 'nick'});
+      var a = new App({name: prompt("name?")});
       var av = new AppView({model: a});
       a.on('ready', function(){
         $('body').append(av.render());

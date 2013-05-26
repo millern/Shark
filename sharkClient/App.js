@@ -5,7 +5,7 @@ var App = Backbone.Model.extend({
     socket.emit('fetch');
     socket.on('updateClient',function(data){
       self.set('games',new Games(data) || new Games());
-      self.set('currGame',self.get('games') ? self.get('games').last() : self.newGame('tucker'));
+      self.set('currGame',self.get('games') ? self.get('games').last() : self.newGame(prompt('opponent')));
       self.trigger("ready");
     });
   },
