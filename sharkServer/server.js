@@ -1,8 +1,8 @@
-var express = require('../lib/node_modules/express');
-var fs = require('fs');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('../lib/node_modules/socket.io').listen(server, {
+var express = require('../lib/node_modules/express'),
+  fs = require('fs'),
+  app = express(),
+  server = require('http').createServer(app),
+  io = require('../lib/node_modules/socket.io').listen(server, {
    "log level": 0
 });
 

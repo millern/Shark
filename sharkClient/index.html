@@ -23,8 +23,10 @@
       var a = new App({name: prompt("name?")});
       var av = new AppView({model: a});
       a.on('ready', function(){
+        $('p').remove();
         $('body').append(av.render());
       });
     </script>
+    <p>Waiting for opponent</p>
   </body>
 </html>

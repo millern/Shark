@@ -7,7 +7,7 @@ var AppView = Backbone.View.extend({
   },
   events: {
     'click .newGame' : function(){
-      socket.emit('newGame');
+      socket.emit('newGame',this.model.get('currGame').toJSON());
       this.render();
     }
   },

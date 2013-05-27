@@ -1,11 +1,11 @@
-var fs = require('fs');
-var gameIndex = 0;
-var athletes = {};
-var sideline = [];
-var pitch = [];
-var ongoingGames = {};
-var manager = {};
-var io;
+var fs = require('fs'),
+    gameIndex = 0,
+    athletes = {},
+    sideline = [],
+    ongoingGames = {},
+    manager = {},
+    io;
+
 module.exports = function(_io){
 io = _io;
 return manager;
@@ -24,8 +24,17 @@ socket.on('name', function(name){
 });
 //handle syncing backbone models
   socket.on('update', function(data){
+    //rule check
     ongoingGames[data.id] = data;
-    io.sockets.emit('updateClient',data);
+    athletes[data.player1].socket.emit('updateClient',data);
+    athletes[data.player2].socket.emit('updateClient',data);
+  });
+  socket.on('newGame',function(data){
+    sideline.push(data.player1);
+    sideline.push(data.player2);
+    if (sideline.length >= 2){
+      startGame();
+    }
   });
 };
 
@@ -33,8 +42,6 @@ var startGame = function(){
   var a1 = sideline.pop();
   var a2 = sideline.pop();
   ongoingGames[gameIndex] = {id: gameIndex, player1:a1, player2:a2};
-  pitch.push(a1);
-  pitch.push(a2);
   athletes[a1].socket.emit('updateClient', ongoingGames[gameIndex]);
   athletes[a2].socket.emit('updateClient', ongoingGames[gameIndex]);
   gameIndex++;
