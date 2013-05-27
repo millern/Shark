@@ -2,15 +2,6 @@ var GameView = Backbone.View.extend({
 
   tagname: 'div',
 
-  initialize: function(){
-    this.model.on('change:word1 change:word2',function(){
-      this.render();
-    },this);
-    this.model.on('newTurn gameOver',function(){
-      this.render();
-    },this);
-  },
-
   events: {
     'keyup .player1Side .guess'  : function(event){
       if(event.which === 13){

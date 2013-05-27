@@ -1,5 +1,6 @@
 var Game = Backbone.Model.extend ({
   initialize: function(params){
+    this.set('id', params.id);
     this.set('player1', params.player1);
     this.set('player2', params.player2);
     this.set('word1Guesses', params.word1Guesses ? new Guesses(params.word1Guesses) : new Guesses());
@@ -18,6 +19,9 @@ var Game = Backbone.Model.extend ({
     this.on('change:word1 change:word2',function(){
       this.trigger('syncGame');
     },this);
+    this.on('syncGame',function(){
+      socket.emit('update', this.toJSON());
+    }, this);
   },
   setWord: function(player, word){
     if (player === this.get('player1')) {
@@ -41,7 +45,6 @@ var Game = Backbone.Model.extend ({
     if(guess.get('score') === 4){
       console.log(guesser, ' won');
       this.set('winner',guesser);
-      this.trigger('gameOver');
     } else {
       console.log("new turn");
       this.toggleTurn();
