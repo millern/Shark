@@ -1,5 +1,4 @@
-var fs = require('fs'),
-    gameIndex = 0,
+var gameIndex = 0,
     athletes = {},
     sideline = [],
     ongoingGames = {},
