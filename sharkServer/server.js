@@ -9,8 +9,8 @@ var express = require('../lib/node_modules/express'),
 app.use('/lib', express.static(__dirname + '/../lib'));
 app.use('/', express.static(__dirname + '/../sharkClient'));
 
-server.listen(8080, '10.0.1.23');
-console.log('listening on 10.0.1.23:8080');
+server.listen(8080, '192.168.1.15');
+console.log('listening on 192.168.1.15:8080');
 
 var socketHandler = require('./socketHandler')(io);
 io.sockets.on('connection', socketHandler.handler);
