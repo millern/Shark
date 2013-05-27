@@ -1,11 +1,12 @@
 var App = Backbone.Model.extend({
   initialize: function(params){
     this.set('player', params.name);
+    socket.emit('name',params.name);
     var self = this;
     socket.emit('fetch');
     socket.on('updateClient',function(data){
-      self.set('games',new Games(data) || new Games());
-      self.set('currGame',self.get('games') ? self.get('games').last() : self.newGame(prompt('opponent')));
+      self.set('games', typeof data === 'object' ? new Games(data) : new Games());
+      self.set('currGame',self.get('games').length ? self.get('games').last() : self.newGame(prompt('opponent')));
       self.trigger("ready");
     });
   },

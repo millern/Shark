@@ -24,29 +24,7 @@ app.get('/games',function(req,res){
 });
 
 server.listen(8080, '10.0.1.23');
-
-io.sockets.on('connection', function(socket){
-
-  socket.on('update', function(data){
-    var body = JSON.stringify(data);
-    fs.writeFile(__dirname + '/data.txt', body, function(err){
-      if (err){
-        console.log(err);
-      } else {
-      }
-    });
-    io.sockets.emit('updateClient',data);
-  });
-
-  socket.on('fetch',function(){
-    fs.readFile(__dirname + '/data.txt', function(err,data){
-      if(err){
-        console.log(err);
-      } else {
-        socket.emit('updateClient',JSON.parse(data));
-      }
-    });
-  });
-
-});
 console.log('listening on 10.0.1.23:8080');
+
+var socketHandler = require('./socketHandler')(io);
+io.sockets.on('connection', socketHandler.handler);
