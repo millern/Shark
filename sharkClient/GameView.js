@@ -55,16 +55,16 @@ var GameView = Backbone.View.extend({
       '</div>' +
       '<div class="row">' +
       '<div class="player1Side span4 offset1">' +
-      '{{setWord1}}'+
+      '{{setWord1 this}}'+
       '<div>{{player1}}</div>'+
-      '{{guessWord1}}'+
+      '{{guessWord1 this}}'+
       '<div>{{word1}}</div>'+
       '<ul>{{#each word1Guesses}}<li>{{this.guess}} {{this.score}}</li>{{/each}}</ul>'+
       '</div>'+
       '<div class="player2Side span4 offset1">' +
-      '{{setWord2}}'+
+      '{{setWord2 this}}'+
       '<div>{{player2}}</div>'+
-      '{{guessWord2}}'+
+      '{{guessWord2 this}}'+
       '<div>{{word2}}</div>'+
       '<ul>{{#each word1Guesses}}<li>{{this.guess}} {{this.score}}</li>{{/each}}</ul>'+
       '</div>'+
