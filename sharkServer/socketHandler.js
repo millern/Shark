@@ -29,8 +29,11 @@ socket.on('name', function(name){
     athletes[data.player2].socket.emit('updateClient',data);
   });
   socket.on('newGame',function(data){
-    sideline.push(data.player1);
-    sideline.push(data.player2);
+    if (this === athletes[data.player1].socket){
+      sideline.push(data.player1);
+    } else {
+      sideline.push(data.player2);
+    }
     if (sideline.length >= 2){
       startGame();
     }
