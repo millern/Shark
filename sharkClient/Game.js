@@ -43,7 +43,7 @@ var Game = Backbone.Model.extend ({
     }
   },
   handleGuess: function(guess, guesser){
-    if(guess.get('score') === 4){
+    if(guess.get('score') === 4 && this.validateDuplicates(guess.get('guess'))){
       console.log(guesser, ' won');
       this.set('winner',guesser);
     } else {
@@ -63,6 +63,12 @@ var Game = Backbone.Model.extend ({
            this.validateCharacters(word) &&
            this.validateDuplicates(word) &&
            this.validateAnagram(word) ?
+           true :
+           false;
+  },
+  validateGuess: function(word){
+    return this.validateLength(word) &&
+           this.validateCharacters(word) ?
            true :
            false;
   },

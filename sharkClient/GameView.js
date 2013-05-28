@@ -5,14 +5,18 @@ var GameView = Backbone.View.extend({
   events: {
     'keyup .guess'  : function(event){
       if(event.which === 13){
-        this.model.addGuess(this.model.get("localPlayer"),$('.guess').val());
+        if (this.model.validateGuess($('.guess').val())){
+          this.model.addGuess(this.model.get("localPlayer"),$('.guess').val());
+        } else {
+          console.log("invalid guess");
+        }
         $('.guess').val('');
       }
     },
     'keyup .set'  : function(event){
       if(event.which === 13){
         if (this.model.validateWord($('.set').val())){
-        this.model.setWord(this.model.get("localPlayer"),$('.set').val());
+          this.model.setWord(this.model.get("localPlayer"),$('.set').val());
         } else {
           console.log("invalid word");
         }
@@ -49,7 +53,7 @@ var GameView = Backbone.View.extend({
       } else if ((side === "left" && player === "player1") || !!game.winner){
         return game.word1;
       } else {
-        return new Handlebars.SafeString('<b>guess me</b>');
+        return new Handlebars.SafeString('guess me');
       }
     });
     return Handlebars.compile(
@@ -63,7 +67,7 @@ var GameView = Backbone.View.extend({
             '<div class="playerName">{{player1}}</div>'+
           '</div>'+
           '<div class="row">'+
-            '<div>{{word this "left"}}</div>'+
+            '<div class="word">{{word this "left"}}</div>'+
           '</div>'+
           '<div class="row">' +
             '{{guesses this.word1Guesses}}'+
@@ -74,7 +78,7 @@ var GameView = Backbone.View.extend({
             '<div class="playerName">{{player2}}</div>'+
           '</div>'+
           '<div class="row">' +
-            '<div>{{word this "right"}}</div>'+
+            '<div class="word">{{word this "right"}}</div>'+
           '</div>'+
           '<div class="row">' +
             '{{guesses this.word2Guesses}}'+
