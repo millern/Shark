@@ -70,7 +70,7 @@ var Game = Backbone.Model.extend ({
     return word.length === 4 ? true : false;
   },
   validateCharacters: function(word){
-    return !!word.match(/[a-z]+/);
+    return !!word.match(/^[a-z]{4}$/);
   },
   validateDuplicates: function(word){
     return true;
