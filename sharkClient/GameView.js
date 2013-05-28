@@ -46,20 +46,21 @@ var GameView = Backbone.View.extend({
     });
     return Handlebars.compile(
       '<div class="row">'+
+      '<div>{{localPlayer}}</div>' +
         '<div class="gameState span2 offset4">{{gameState this}}</div>' +
       '</div>' +
       '<div class="row">' +
         '<div class="player1Side span4 offset1">' +
           '{{setWord this.word1}}'+
           '<div>{{player1}}</div>'+
-          '{{guessWord this this.player1}}'+
+          '{{guessWord this this.player2}}'+
           '<div>{{word1}}</div>'+
           '{{guesses this.word1Guesses}}'+
         '</div>'+
         '<div class="player2Side span4 offset1">' +
           '{{setWord this.word2}}'+
           '<div>{{player2}}</div>'+
-          '{{guessWord this this.player2}}'+
+          '{{guessWord this this.player1}}'+
           '<div>{{word2}}</div>'+
           '{{guesses this.word2Guesses}}'+
         '</div>'+
