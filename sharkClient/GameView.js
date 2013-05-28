@@ -11,7 +11,7 @@ var GameView = Backbone.View.extend({
     },
     'keyup .set'  : function(event){
       if(event.which === 13){
-        if (this.model.validateWord()){
+        if (this.model.validateWord($('.set').val())){
         this.model.setWord(this.model.get("localPlayer"),$('.set').val());
         } else {
           console.log("invalid word");
@@ -34,7 +34,7 @@ var GameView = Backbone.View.extend({
     });
     Handlebars.registerHelper('gameState', function(game){
       if (!(game.word1 && game.word2)){
-        return "set your words"
+        return "set your words";
       } else {
       return game.winner? 'winner: ' + game.winner : game.guessing + ' is guessing.';
       }

@@ -59,6 +59,23 @@ var Game = Backbone.Model.extend ({
             );
   },
   validateWord: function(word){
+    return this.validateLength(word) &&
+           this.validateCharacters(word) &&
+           this.validateDuplicates(word) &&
+           this.validateAnagram(word) ?
+           true :
+           false;
+  },
+  validateLength: function(word){
+    return word.length === 4 ? true : false;
+  },
+  validateCharacters: function(word){
+    return !!word.match(/[a-z]+/);
+  },
+  validateDuplicates: function(word){
+    return true;
+  },
+  validateAnagram: function(word){
     return true;
   }
 });
