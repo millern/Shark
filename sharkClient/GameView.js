@@ -20,7 +20,7 @@ var GameView = Backbone.View.extend({
   template: function(){
     Handlebars.registerHelper('guessWord', function(game){
       var player = game.localPlayer === game.player1 ? game.player1 : game.player2;
-      var trail = game.guessing !== player || game.winner ? ' disabled />' : ' />';
+      var trail = game.guessing !== player || game.winner || !(game.word1 && game.word2) ? ' disabled />' : ' />';
       return new Handlebars.SafeString('<input class="guess" placeholder="guess word"' + trail);
     });
     Handlebars.registerHelper('setWord', function(game){
@@ -29,7 +29,11 @@ var GameView = Backbone.View.extend({
       return new Handlebars.SafeString('<input class="set" placeholder="set word"' + trail);
     });
     Handlebars.registerHelper('gameState', function(game){
+      if (!(game.word1 && game.word2)){
+        return "set your words"
+      } else {
       return game.winner? 'winner: ' + game.winner : game.guessing + ' is guessing.';
+      }
     });
     Handlebars.registerHelper('guesses', function(guesses){
       return new Handlebars.SafeString(new GuessesView({collection: guesses}).render()[0].outerHTML);
