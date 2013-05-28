@@ -1,5 +1,6 @@
 var GuessesView = Backbone.View.extend({
   tagName: 'ul',
+  className: "guessesList",
 
   render: function(){
     this.$el.children().detach();

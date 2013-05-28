@@ -41,26 +41,39 @@ var GameView = Backbone.View.extend({
       } else if ((side === "left" && player === "player1") || !!game.winner){
         return game.word1;
       } else {
-        return "";
+        return new Handlebars.SafeString('<b>guess me</b>');
       }
     });
     return Handlebars.compile(
-      '<div class="row"><h4 class="span4 offset4">Welcome {{localPlayer}}</h4></div>' +
-      '<div class="row"><h4 class="gameState span4 offset4">{{gameState this}}</h4></div>' +
-      '<div class="row"><div class="span2 offset4">{{setWord this}}</div></div>' +
-      '<div class="row"><div class="span2 offset4">{{guessWord this}}</div></div>' +
-      '<div class="row">' +
-        '<div class="leftSide span4 offset2">' +
-          '<div class="playerName">{{player1}}</div>'+
-          '<div>{{word this "left"}}</div>'+
-          '{{guesses this.word1Guesses}}'+
+      '<div class="row center"><h4 class="welcome">Welcome {{localPlayer}}</h4></div>' +
+      '<div class="row center"><h5 class="gameState">{{gameState this}}</h5></div>' +
+      '<div class="row center"><div class="setWord">{{setWord this}}</div></div>' +
+      '<div class="row center"><div class="guessWord">{{guessWord this}}</div></div>' +
+      '<div class="row wordsWrapper center">' +
+        '<div class="leftSide">' +
+          '<div class="row">' +
+            '<div class="playerName">{{player1}}</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div>{{word this "left"}}</div>'+
+          '</div>'+
+          '<div class="row">' +
+            '{{guesses this.word1Guesses}}'+
+          '</div>'+
         '</div>'+
-        '<div class="rightSide" span4 offset2">' +
-          '<div class="playerName">{{player2}}</div>'+
-          '<div>{{word this "right"}}</div>'+
-          '{{guesses this.word2Guesses}}'+
+        '<div class="rightSide">' +
+          '<div class="row">' +
+            '<div class="playerName">{{player2}}</div>'+
+          '</div>'+
+          '<div class="row">' +
+            '<div>{{word this "right"}}</div>'+
+          '</div>'+
+          '<div class="row">' +
+            '{{guesses this.word2Guesses}}'+
+          '</div>'+
         '</div>'+
-      '</div>');
+      '</div>'
+      );
   },
 
   render: function(){

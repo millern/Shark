@@ -13,12 +13,10 @@ var AppView = Backbone.View.extend({
   },
   render: function(){
     this.$el.children().detach();
-    var $btn = $('<button class="newGame offset4">New Game</button>');
+    var $btn = $('<div class="center"><button class="newGame">New Game</button></div>');
     console.log("rendering from app view");
     return this.$el.append(
-      (new GameView({model: this.model.get('currGame')})).render(),
-      $('<div class="row"></div>')
-      .append($btn)
+      (new GameView({model: this.model.get('currGame')})).render().append($btn)
       );
   }
 });

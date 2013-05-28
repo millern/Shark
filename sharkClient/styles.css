@@ -1,8 +1,25 @@
-body{
-  text-align: center;
+.center {
+	margin: 0 auto;
+	max-width: 30%;
+	text-align: center;
 }
-body>div{
-  margin:0 auto;
-  width:800px;
-  text-align: left;
+input[placeholder] {
+  text-align:center;
+}
+.guessesList{
+	list-style: none;
+	margin: 0;
+}
+.wordsWrapper{
+	min-height: 10em;
+}
+.leftSide, .rightSide {
+	width: 50%;
+	float: left;
+}
+.leftSide {
+	text-align: left;
+}
+.rightSide {
+	text-align: right;
 }
