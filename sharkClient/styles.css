@@ -1,0 +1,8 @@
+body{
+  text-align: center;
+}
+body>div{
+  margin:0 auto;
+  width:800px;
+  text-align: left;
+}

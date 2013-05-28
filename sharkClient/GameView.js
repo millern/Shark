@@ -3,65 +3,61 @@ var GameView = Backbone.View.extend({
   tagname: 'div',
 
   events: {
-    'keyup .player1Side .guess'  : function(event){
+    'keyup .guess'  : function(event){
       if(event.which === 13){
-        this.model.addGuess(this.model.get("player1"),$('.player1Side .guess').val());
-        $('.player1Side .guess').val('');
+        this.model.addGuess(this.model.get("localPlayer"),$('.guess').val());
+        $('.guess').val('');
       }
     },
-    'keyup .player2Side .guess'  : function(event){
+    'keyup .set'  : function(event){
       if(event.which === 13){
-        this.model.addGuess(this.model.get("player2"),$('.player2Side .guess').val());
-        $('.player2Side .guess').val('');
-      }
-    },
-    'keyup .player1Side .set'  : function(event){
-      if(event.which === 13){
-        this.model.setWord(this.model.get("player1"),$('.player1Side .set').val());
-        $('.player1Side .set').val('');
-      }
-    },
-    'keyup .player2Side .set'  : function(event){
-      if(event.which === 13){
-        this.model.setWord(this.model.get("player2"),$('.player2Side .set').val());
-        $('.player2Side .set').val('');
+        this.model.setWord(this.model.get("localPlayer"),$('.set').val());
+        $('.set').val('');
       }
     }
   },
 
   template: function(){
-    Handlebars.registerHelper('guessWord', function(game, player){
-      var trail = game.guessing === player || game.winner ? ' disabled />' : ' />';
+    Handlebars.registerHelper('guessWord', function(game){
+      var player = game.localPlayer === game.player1 ? game.player1 : game.player2;
+      var trail = game.guessing !== player || game.winner ? ' disabled />' : ' />';
       return new Handlebars.SafeString('<input class="guess" placeholder="guess word"' + trail);
     });
-    Handlebars.registerHelper('setWord', function(word){
+    Handlebars.registerHelper('setWord', function(game){
+      var word = game.localPlayer === game.player1 ? game.word1 : game.word2;
       var trail = !! word ? ' disabled />' : ' />';
       return new Handlebars.SafeString('<input class="set" placeholder="set word"' + trail);
     });
     Handlebars.registerHelper('gameState', function(game){
-      return game.winner? 'winner: ' + game.winner : game.guessing + ' is guessing';
+      return game.winner? 'winner: ' + game.winner : game.guessing + ' is guessing.';
     });
     Handlebars.registerHelper('guesses', function(guesses){
       return new Handlebars.SafeString(new GuessesView({collection: guesses}).render()[0].outerHTML);
     });
+    Handlebars.registerHelper('word', function(game, side){
+      var player = game.localPlayer === game.player1 ? 'player1' : 'player2';
+      if ((side == "right"  && player === 'player2') || !!game.winner){
+         return game.word2;
+      } else if ((side === "left" && player === "player1") || !!game.winner){
+        return game.word1;
+      } else {
+        return "";
+      }
+    });
     return Handlebars.compile(
-      '<div class="row">'+
-      '<div>{{localPlayer}}</div>' +
-        '<div class="gameState span2 offset4">{{gameState this}}</div>' +
-      '</div>' +
+      '<div class="row"><h4 class="span4 offset4">Welcome {{localPlayer}}</h4></div>' +
+      '<div class="row"><h4 class="gameState span4 offset4">{{gameState this}}</h4></div>' +
+      '<div class="row"><div class="span2 offset4">{{setWord this}}</div></div>' +
+      '<div class="row"><div class="span2 offset4">{{guessWord this}}</div></div>' +
       '<div class="row">' +
-        '<div class="player1Side span4 offset1">' +
-          '{{setWord this.word1}}'+
-          '<div>{{player1}}</div>'+
-          '{{guessWord this this.player2}}'+
-          '<div>{{word1}}</div>'+
+        '<div class="leftSide span4 offset2">' +
+          '<div class="playerName">{{player1}}</div>'+
+          '<div>{{word this "left"}}</div>'+
           '{{guesses this.word1Guesses}}'+
         '</div>'+
-        '<div class="player2Side span4 offset1">' +
-          '{{setWord this.word2}}'+
-          '<div>{{player2}}</div>'+
-          '{{guessWord this this.player1}}'+
-          '<div>{{word2}}</div>'+
+        '<div class="rightSide" span4 offset2">' +
+          '<div class="playerName">{{player2}}</div>'+
+          '<div>{{word this "right"}}</div>'+
           '{{guesses this.word2Guesses}}'+
         '</div>'+
       '</div>');
