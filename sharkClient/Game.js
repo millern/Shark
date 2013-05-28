@@ -58,7 +58,7 @@ var Game = Backbone.Model.extend ({
                         this.get('player1')
             );
   },
-  validWord: function(word){
-
+  validateWord: function(word){
+    return true;
   }
 });

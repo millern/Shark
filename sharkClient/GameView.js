@@ -11,7 +11,11 @@ var GameView = Backbone.View.extend({
     },
     'keyup .set'  : function(event){
       if(event.which === 13){
+        if (this.model.validateWord()){
         this.model.setWord(this.model.get("localPlayer"),$('.set').val());
+        } else {
+          console.log("invalid word");
+        }
         $('.set').val('');
       }
     }
