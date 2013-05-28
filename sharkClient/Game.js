@@ -73,7 +73,15 @@ var Game = Backbone.Model.extend ({
     return !!word.match(/^[a-z]{4}$/);
   },
   validateDuplicates: function(word){
-    return true;
+    var hash = {};
+    return _.reduce(word,function(memo,item){
+      if(hash.hasOwnProperty(item) || !memo){
+        return false;
+      } else {
+        hash[item] = true;
+        return true;
+      }
+    },true);
   },
   validateAnagram: function(word){
     return true;
