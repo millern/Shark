@@ -58,13 +58,25 @@ var Game = Backbone.Model.extend ({
                         this.get('player1')
             );
   },
-  validateWord: function(word){
-    return this.validateLength(word) &&
-           this.validateCharacters(word) &&
-           this.validateDuplicates(word) &&
-           this.validateAnagram(word) ?
-           true :
-           false;
+  checkWord: function(word){
+    if(this.validateLength(word) &&
+        this.validateCharacters(word) &&
+        this.validateDuplicates(word)){
+      this.validateAnagram(word);
+    } else {
+      var errors = [];
+      if (!this.validateLength(word)){
+        errors.push('too long');
+      }
+      if (!this.validateCharacters(word)){
+        errors.push('has caps');
+      }
+      if (!this.validateDuplicates(word)){
+        errors.push('has dupe letters');
+      }
+      this.trigger('errorMsg', errors);
+      console.log("invalid word",word);
+    }
   },
   validateGuess: function(word){
     return this.validateLength(word) &&
@@ -90,6 +102,22 @@ var Game = Backbone.Model.extend ({
     },true);
   },
   validateAnagram: function(word){
-    return true;
+    var self = this;
+    $.ajax({
+      url:"http://anagramica.com/best/"+word,
+      type: "GET",
+      dataType: "jsonp",
+      success: function(data){
+        if (data.best.length === 1 && data.best[0]===word){
+          self.setWord(self.get('localPlayer'),word);
+        } else {
+          self.trigger('errorMsg', data.best);
+          console.log("Anagram check fails: ",data.best);
+        }
+      },
+      error: function(err){
+        console.log("Anagram error: ",err);
+      }
+    });
   }
 });

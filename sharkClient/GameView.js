@@ -1,7 +1,11 @@
 var GameView = Backbone.View.extend({
 
   tagname: 'div',
-
+  initialize: function(){
+    this.model.on('errorMsg', function(errors){
+      this.render(errors);
+    }, this);
+  },
   events: {
     'keyup .guess'  : function(event){
       if(event.which === 13){
@@ -15,11 +19,7 @@ var GameView = Backbone.View.extend({
     },
     'keyup .set'  : function(event){
       if(event.which === 13){
-        if (this.model.validateWord($('.set').val())){
-          this.model.setWord(this.model.get("localPlayer"),$('.set').val());
-        } else {
-          console.log("invalid word");
-        }
+        this.model.checkWord($('.set').val());
         $('.set').val('');
       }
     }
@@ -60,6 +60,7 @@ var GameView = Backbone.View.extend({
       '<div class="row center"><h4 class="welcome">Welcome {{localPlayer}}</h4></div>' +
       '<div class="row center"><h5 class="gameState">{{gameState this}}</h5></div>' +
       '<div class="row center"><div class="setWord">{{setWord this}}</div></div>' +
+      '<div class="row center"><div class="errors">{{errors}}</div></div>' +
       '<div class="row center"><div class="guessWord">{{guessWord this}}</div></div>' +
       '<div class="row wordsWrapper center">' +
         '<div class="leftSide">' +
@@ -88,9 +89,13 @@ var GameView = Backbone.View.extend({
       );
   },
 
-  render: function(){
+  render: function(errors){
     this.$el.children().detach();
+    var params = this.model.toJSON();
+    if(errors){
+      params.errors = errors;
+    }
     var tmplt = this.template();
-    return this.$el.html(tmplt(this.model.toJSON()));
+    return this.$el.html(tmplt(params));
   }
 });
