@@ -9,11 +9,8 @@ var GameView = Backbone.View.extend({
   events: {
     'keyup .guess'  : function(event){
       if(event.which === 13){
-        if (this.model.validateGuess($('.guess').val())){
-          this.model.addGuess(this.model.get("localPlayer"),$('.guess').val());
-        } else {
-          console.log("invalid guess");
-        }
+        var guess = $('.guess').val().toLowerCase();
+        this.model.validateGuess(guess)
         $('.guess').val('');
       }
     },
@@ -27,14 +24,22 @@ var GameView = Backbone.View.extend({
 
   template: function(){
     Handlebars.registerHelper('guessWord', function(game){
+      var word = game.localPlayer === game.player1 ? game.word1 : game.word2;
+      if (word){
       var player = game.localPlayer === game.player1 ? game.player1 : game.player2;
       var trail = game.guessing !== player || game.winner || !(game.word1 && game.word2) ? ' disabled />' : ' />';
       return new Handlebars.SafeString('<input class="guess" placeholder="guess word"' + trail);
+      } else {
+        return new Handlebars.SafeString('');
+      }
     });
     Handlebars.registerHelper('setWord', function(game){
       var word = game.localPlayer === game.player1 ? game.word1 : game.word2;
-      var trail = !! word ? ' disabled />' : ' />';
-      return new Handlebars.SafeString('<input class="set" placeholder="set word"' + trail);
+      if (!word){
+      return new Handlebars.SafeString('<input class="set" placeholder="set word" />');
+      } else {
+        return new Handlebars.SafeString('');
+      }
     });
     Handlebars.registerHelper('gameState', function(game){
       if (!(game.word1 && game.word2)){

@@ -59,33 +59,30 @@ var Game = Backbone.Model.extend ({
             );
   },
   checkWord: function(word){
-    if(this.validateLength(word) &&
-        this.validateCharacters(word) &&
-        this.validateDuplicates(word)){
+    if(this.validateCharacters(word) &&
+       this.validateDuplicates(word)){
       this.validateAnagram(word);
     } else {
       var errors = [];
-      if (!this.validateLength(word)){
-        errors.push('too long');
-      }
       if (!this.validateCharacters(word)){
-        errors.push('has caps');
+        errors.push('4 Letter Words');
       }
       if (!this.validateDuplicates(word)){
-        errors.push('has dupe letters');
+        errors.push('No Duplicate Letters');
       }
-      this.trigger('errorMsg', errors);
+      this.trigger('errorMsg', errors.join(', '));
       console.log("invalid word",word);
     }
   },
   validateGuess: function(word){
-    return this.validateLength(word) &&
-           this.validateCharacters(word) ?
-           true :
-           false;
+    if (this.validateCharacters(word)){
+      this.addGuess(this.get("localPlayer"), word);
+    } else {
+      this.trigger('errorMsg',"Invalid Guess");
+    }
   },
   validateLength: function(word){
-    return word.length === 4 ? true : false;
+    return word.length === 4;
   },
   validateCharacters: function(word){
     return !!word.match(/^[a-z]{4}$/);
@@ -111,8 +108,8 @@ var Game = Backbone.Model.extend ({
         if (data.best.length === 1 && data.best[0]===word){
           self.setWord(self.get('localPlayer'),word);
         } else {
-          self.trigger('errorMsg', data.best);
-          console.log("Anagram check fails: ",data.best);
+          self.trigger('errorMsg', "No anagrams ("+data.best.join(', ')+")");
+          console.log("Anagram check fails: ",data.best.join(', '));
         }
       },
       error: function(err){

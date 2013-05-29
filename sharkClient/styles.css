@@ -26,6 +26,6 @@ input[placeholder] {
 .word {
 	font-weight:bold;
 }
-.error {
+.errors {
 	color:red;
 }
