@@ -10,7 +10,7 @@ var GameView = Backbone.View.extend({
     'keyup .guess'  : function(event){
       if(event.which === 13){
         var guess = $('.guess').val().toLowerCase();
-        this.model.validateGuess(guess)
+        this.model.validateGuess(guess);
         $('.guess').val('');
       }
     },
