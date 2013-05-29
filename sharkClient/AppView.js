@@ -16,7 +16,8 @@ var AppView = Backbone.View.extend({
     var $btn = $('<div class="center"><button class="newGame">New Game</button></div>');
     console.log("rendering from app view");
     return this.$el.append(
-      (new GameView({model: this.model.get('currGame')})).render().append($btn)
+      (new GameView({model: this.model.get('currGame')})).render(),
+      $btn
       );
   }
 });
