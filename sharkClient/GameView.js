@@ -68,28 +68,15 @@ var GameView = Backbone.View.extend({
       '<div class="row center"><div class="errors">{{errors}}</div></div>' +
       '<div class="row center"><div class="guessWord">{{guessWord this}}</div></div>' +
       '<div class="row wordsWrapper center">' +
-        '<div class="leftSide">' +
           '<div class="row">' +
-            '<div class="playerName">{{player1}}</div>'+
+            '<div class="playerName">{{player1}}</div><div class="playerName">{{player2}}</div>'+
           '</div>'+
           '<div class="row">'+
-            '<div class="word">{{word this "left"}}</div>'+
+            '<div class="word">{{word this "left"}}</div><div class="word">{{word this "right"}}</div>'+
           '</div>'+
           '<div class="row">' +
-            '{{guesses this.word1Guesses}}'+
-          '</div>'+
-        '</div>'+
-        '<div class="rightSide">' +
-          '<div class="row">' +
-            '<div class="playerName">{{player2}}</div>'+
-          '</div>'+
-          '<div class="row">' +
-            '<div class="word">{{word this "right"}}</div>'+
-          '</div>'+
-          '<div class="row">' +
-            '{{guesses this.word2Guesses}}'+
-          '</div>'+
-        '</div>'+
+            '{{guesses this.word1Guesses}}{{guesses this.word2Guesses}}'+
+          '</div>' +
       '</div>'
       );
   },
