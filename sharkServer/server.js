@@ -1,8 +1,8 @@
-var express = require('node_modules/express'),
+var express = require('express'),
   fs = require('fs'),
   app = express(),
   server = require('http').createServer(app),
-  io = require('node_modules/socket.io').listen(server, {
+  io = require('socket.io').listen(server, {
    "log level": 0
 });
 
