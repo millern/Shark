@@ -8,7 +8,7 @@ var express = require('express'),
 
 app.use('/lib', express.static(__dirname + '/../lib'));
 app.use('/', express.static(__dirname + '/../sharkClient'));
-var ip = '10.0.1.25';
+var ip = '10.0.1.82';
 var port = 8080;
 
 var sandbox = false;
