@@ -62,20 +62,20 @@ var GameView = Backbone.View.extend({
       }
     });
     return Handlebars.compile(
-      '<div class="row center"><h4 class="welcome">Welcome {{localPlayer}}</h4></div>' +
-      '<div class="row center"><h5 class="gameState">{{gameState this}}</h5></div>' +
-      '<div class="row center"><div class="setWord">{{setWord this}}</div></div>' +
-      '<div class="row center"><div class="errors">{{errors}}</div></div>' +
-      '<div class="row center"><div class="guessWord">{{guessWord this}}</div></div>' +
-      '<div class="row wordsWrapper center">' +
-          '<div class="row">' +
-            '<div class="playerName span4 offset1">{{player1}}</div><div class="playerName span4">{{player2}}</div>'+
+      '<div class="row-fluid center"><h4 class="welcome">Welcome {{localPlayer}}</h4></div>' +
+      '<div class="row-fluid center"><h5 class="gameState">{{gameState this}}</h5></div>' +
+      '<div class="row-fluid center"><div class="setWord">{{setWord this}}</div></div>' +
+      '<div class="row-fluid center"><div class="errors">{{errors}}</div></div>' +
+      '<div class="row-fluid center"><div class="guessWord">{{guessWord this}}</div></div>' +
+      '<div class="row-fluid wordsWrapper center">' +
+          '<div class="row-fluid">' +
+            '<div class="playerName span6">{{player1}}</div><div class="playerName span6">{{player2}}</div>'+
           '</div>'+
-          '<div class="row">'+
-            '<div class="word span4 offset1">{{word this "left"}}</div><div class="word span4">{{word this "right"}}</div>'+
+          '<div class="row-fluid">'+
+            '<div class="word span6">{{word this "left"}}</div><div class="word span6">{{word this "right"}}</div>'+
           '</div>'+
-          '<div class="row">' +
-            '<div class="span4">{{guesses this.word1Guesses}}</div><div class="span4">{{guesses this.word2Guesses}}</div>'+
+          '<div class="row-fluid">' +
+            '{{guesses this.word1Guesses}}{{guesses this.word2Guesses}}'+
           '</div>' +
       '</div>'
       );
