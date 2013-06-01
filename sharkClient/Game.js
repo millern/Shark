@@ -52,6 +52,13 @@ var Game = Backbone.Model.extend ({
       this.trigger('newTurn');
     }
   },
+  validateGuess: function(word){
+    if (this.validateCharacters(word)){
+      this.checkDictionary(word);
+    } else {
+      this.trigger('errorMsg',"Invalid Guess");
+    }
+  },
   toggleTurn: function(){
     this.set('guessing',this.get('guessing')===this.get('player1') ?
                         this.get('player2') :
@@ -61,7 +68,7 @@ var Game = Backbone.Model.extend ({
   checkWord: function(word){
     if(this.validateCharacters(word) &&
        this.validateDuplicates(word)){
-      this.validateAnagram(word);
+      this.checkAnagram(word);
     } else {
       var errors = [];
       if (!this.validateCharacters(word)){
@@ -72,13 +79,6 @@ var Game = Backbone.Model.extend ({
       }
       this.trigger('errorMsg', errors.join(', '));
       console.log("invalid word",word);
-    }
-  },
-  validateGuess: function(word){
-    if (this.validateCharacters(word)){
-      this.addGuess(this.get("localPlayer"), word);
-    } else {
-      this.trigger('errorMsg',"Invalid Guess");
     }
   },
   validateLength: function(word){
@@ -98,7 +98,7 @@ var Game = Backbone.Model.extend ({
       }
     },true);
   },
-  validateAnagram: function(word){
+  checkAnagram: function(word){
     var self = this;
     $.ajax({
       url:"http://anagramica.com/best/"+word,
@@ -110,6 +110,25 @@ var Game = Backbone.Model.extend ({
         } else {
           self.trigger('errorMsg', "No anagrams ("+data.best.join(', ')+")");
           console.log("Anagram check fails: ",data.best.join(', '));
+        }
+      },
+      error: function(err){
+        console.log("Anagram error: ",err);
+      }
+    });
+  },
+  checkDictionary: function(word){
+    var self = this;
+    $.ajax({
+      url:"http://anagramica.com/lookup/"+word,
+      type: "GET",
+      dataType: "jsonp",
+      success: function(data){
+        if (data.found === 1){
+          self.addGuess(self.get("localPlayer"),word);
+        } else {
+          self.trigger('errorMsg',"Guess a real word");
+          console.log("Guess is not a word");
         }
       },
       error: function(err){
