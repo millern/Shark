@@ -1,5 +1,6 @@
 var AppView = Backbone.View.extend({
   tagName: 'div',
+  className: 'wrapper',
   initialize: function(){
     this.model.on('gameOver',function(){
       this.render();
@@ -11,13 +12,21 @@ var AppView = Backbone.View.extend({
       this.render();
     }
   },
+  welcomeTemplate: function(){
+    return Handlebars.compile(
+      '<header>Welcome {{name}}</header>'
+      );
+  },
   render: function(){
     this.$el.children().detach();
-    var $btn = $('<div class="center"><button class="newGame">New Game</button></div>');
+    var params = this.model.toJSON();
+    var tmplt = this.welcomeTemplate();
+    var $btn = $('<button class="newGame">New Game</button>');
     console.log("rendering from app view");
-    return this.$el.append(
-      (new GameView({model: this.model.get('currGame')})).render(),
-      $btn
-      );
+    $main = $('<div class="main"></div>');
+    $main.append(new GameView({model: this.model.get('currGame')}).render());
+    $main.append($btn);
+    $footer = $('<footer>powered by <a href="#">eagle</a></footer>');
+    return this.$el.append(tmplt(params), $main,$footer);
   }
 });

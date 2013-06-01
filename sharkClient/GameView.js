@@ -1,6 +1,7 @@
 var GameView = Backbone.View.extend({
 
   tagname: 'div',
+  className: 'gameWrapper cf',
   initialize: function(){
     this.model.on('errorMsg', function(errors){
       this.render(errors);
@@ -62,22 +63,22 @@ var GameView = Backbone.View.extend({
       }
     });
     return Handlebars.compile(
-      '<div class="row-fluid center"><h4 class="welcome">Welcome {{localPlayer}}</h4></div>' +
-      '<div class="row-fluid center"><h5 class="gameState">{{gameState this}}</h5></div>' +
-      '<div class="row-fluid center"><div class="setWord">{{setWord this}}</div></div>' +
-      '<div class="row-fluid center"><div class="errors">{{errors}}</div></div>' +
-      '<div class="row-fluid center"><div class="guessWord">{{guessWord this}}</div></div>' +
-      '<div class="row-fluid wordsWrapper center">' +
-          '<div class="row-fluid">' +
-            '<div class="playerName span6">{{player1}}</div><div class="playerName span6">{{player2}}</div>'+
-          '</div>'+
-          '<div class="row-fluid">'+
-            '<div class="word span6">{{word this "left"}}</div><div class="word span6">{{word this "right"}}</div>'+
-          '</div>'+
-          '<div class="row-fluid">' +
-            '{{guesses this.word1Guesses}}{{guesses this.word2Guesses}}'+
-          '</div>' +
-      '</div>'
+      '<header id="mainHead">'+
+        '<h1 class="gameState">{{gameState this}}</h1>' +
+        '{{setWord this}}' +
+        '<div class="guessWord">{{guessWord this}}</div>' +
+        '<div class="errors">{{errors}}</div>' +
+      '</header>' +
+      '<section id="opponent">' +
+        '<h1>{{player1}}</h1>' +
+        '<h2>{{word this "left"}}</h2>' +
+        '{{guesses this.word1Guesses}}' +
+      '</section>' +
+      '<section id="player">' +
+        '<h1>{{player2}}</h1>'+
+        '<h2>{{word this "right"}}</h2>'+
+        '{{guesses this.word2Guesses}}'+
+      '</section>'
       );
   },
 
