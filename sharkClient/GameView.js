@@ -63,12 +63,12 @@ var GameView = Backbone.View.extend({
       }
     });
     return Handlebars.compile(
-      '<header id="mainHead">'+
+      '<section id="gamePlay">'+
         '<h1 class="gameState">{{gameState this}}</h1>' +
         '{{setWord this}}' +
         '<div class="guessWord">{{guessWord this}}</div>' +
         '<div class="errors">{{errors}}</div>' +
-      '</header>' +
+      '</section>' +
       '<section id="opponent">' +
         '<h1>{{player1}}</h1>' +
         '<h2>{{word this "left"}}</h2>' +
