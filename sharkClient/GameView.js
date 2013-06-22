@@ -8,11 +8,11 @@ var GameView = Backbone.View.extend({
     }, this);
   },
   events: {
-    'keyup .guess'  : function(event){
+    'keyup .guessBox'  : function(event){
       if(event.which === 13){
-        var guess = $('.guess').val().toLowerCase();
+        var guess = $('.guessBox').val().toLowerCase();
         this.model.validateGuess(guess);
-        $('.guess').val('');
+        $('.guessBox').val('');
       }
     },
     'keyup .set'  : function(event){
@@ -29,7 +29,7 @@ var GameView = Backbone.View.extend({
       if (word){
       var player = game.localPlayer === game.player1 ? game.player1 : game.player2;
       var trail = game.guessing !== player || game.winner || !(game.word1 && game.word2) ? ' disabled />' : ' />';
-      return new Handlebars.SafeString('<input class="guess" placeholder="guess word"' + trail);
+      return new Handlebars.SafeString('<input class="guessBox" placeholder="guess word"' + trail);
       } else {
         return new Handlebars.SafeString('');
       }

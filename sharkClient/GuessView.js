@@ -7,7 +7,7 @@ var GuessView = Backbone.View.extend({
   tagName: 'li',
 
   template: Handlebars.compile(
-    '<span class="guess">{{guess}}</span> ' +
+    '<span class="guess">{{guess}}</span>' +
     '<span class="score">{{score}}</span>'
   ),
   render: function(){

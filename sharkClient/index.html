@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="../lib/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="../lib/underscore.js"></script>
     <script src="../lib/jquery.js"></script>
@@ -19,8 +18,11 @@
   </head>
   <body>
     <script>
-      var ip = "10.0.1.23"
-      window.socket = io.connect('http://'+ip+':8080')
+      var port = 8080; //local testing
+      var ip = "10.0.1.33" //local testing
+      window.socket = io.connect('http://'+ip+':8080') //Local testing
+      //window.socket = io.connect('http://shark.jit.su')  //Deployment Code for Nodejitsu
+
       var a = new App({name: prompt("name?")});
       var av = new AppView({model: a});
       a.on('ready', function(){

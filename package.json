@@ -1,0 +1,11 @@
+{
+  "name": "shark",
+  "subdomain": "shark",
+  "scripts": {
+    "start": "node sharkServer/server.js"
+  },
+  "version": "0.10.5-2",
+  "engines": {
+    "node": "0.8.x"
+  }
+}

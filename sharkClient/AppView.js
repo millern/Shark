@@ -26,7 +26,7 @@ var AppView = Backbone.View.extend({
     $main = $('<div class="main"></div>');
     $main.append(new GameView({model: this.model.get('currGame')}).render());
     $main.append($btn);
-    $footer = $('<footer>powered by <a href="#">eagle</a></footer>');
+    $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
     return this.$el.append(tmplt(params), $main,$footer);
   }
 });
