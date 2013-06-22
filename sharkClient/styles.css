@@ -278,6 +278,13 @@ li{
   text-align: center;
 }
 
+.startMessages {
+  color: rgb(150,204,204);
+  margin-bottom:0;
+  font-size: 1.3em;
+  margin-top:15px;
+}
+
 /* Footer
 ----------------------------------------------- */
 

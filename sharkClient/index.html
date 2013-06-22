@@ -24,18 +24,27 @@
       //window.socket = io.connect('http://shark.jit.su')  //Deployment Code for Nodejitsu
       
       $(document).on('ready',function(){
-        $('.startGame').on('click', function(){
+        $('.startGame').on('click', startGame);
+        $('.setName').on('keyup',function(e){
+          if(event.which === 13){
+            startGame();
+          }
+        });
+        function startGame(){
+          console.log("starting a game");
           if ($('.setName').val() !== ''){
             var a = new App({name: $('.setName').val()});
             var av = new AppView({model: a});
+            $('.startMessages').text('Waiting for Opponent');
+            $('.setName').prop('disabled',true);
             a.on('ready', function(){
               $('.wrapper').remove();
               $('body').append(av.render());
             });
           } else {
-            alert('you must set your name!');
+            $('.startMessages').text('Please enter a name');
           }
-        });
+        }
       });
     </script>
     <div class="wrapper">
@@ -55,6 +64,7 @@
               </ol>
             </section>
             <button class="startGame">Got it.</button>
+            <h2 class="startMessages"></h2>
           </section>
         </div>
       </div>
