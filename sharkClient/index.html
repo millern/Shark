@@ -20,16 +20,44 @@
     <script>
       var port = 8080; //local testing
       var ip = "10.0.1.33" //local testing
-      window.socket = io.connect('http://'+ip+':8080') //Local testing
+      window.socket = io.connect('http://' + ip + ':8080') //Local testing
       //window.socket = io.connect('http://shark.jit.su')  //Deployment Code for Nodejitsu
-
-      var a = new App({name: prompt("name?")});
-      var av = new AppView({model: a});
-      a.on('ready', function(){
-        $('p').remove();
-        $('body').append(av.render());
+      
+      $(document).on('ready',function(){
+        $('.startGame').on('click', function(){
+          if ($('.setName').val() !== ''){
+            var a = new App({name: $('.setName').val()});
+            var av = new AppView({model: a});
+            a.on('ready', function(){
+              $('.wrapper').remove();
+              $('body').append(av.render());
+            });
+          } else {
+            alert('you must set your name!');
+          }
+        });
       });
     </script>
-    <p>Waiting for opponent</p>
+    <div class="wrapper">
+      <header> Welcome to Shark</header>
+      <div class="main">
+        <div id="instructions" class="gameWrapper">
+          <section id="gamePlay">
+            <input class="setName" placeholder="Enter your name">
+            <section class="rules">
+              <h2>How to Play</h2>
+              <ol>
+                <li>Choose a 4 letter word.  No anagrams.  No duplicate letters.  No fake words.</li>
+                <li>Guess your opponent's word.</li>
+                <li>See how many letters in your guess match letters in your opponent's word.</li>
+                <li>The first player to guess his opponent's word wins.</li>
+                <li>Good Luck!</li>
+              </ol>
+            </section>
+            <button class="startGame">Got it.</button>
+          </section>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
