@@ -6,7 +6,11 @@ var App = Backbone.Model.extend({
     socket.on('updateClient',function(data){
       data.localPlayer = self.get('player');
       self.set('currGame', new Game(data));
-      self.trigger("ready");
+      self.trigger("update");
+    });
+    socket.on('playerList', function(data){
+      self.set('playerList', new Players(data));
+      self.trigger('newPLayers');
     });
   }
 });

@@ -38,7 +38,7 @@
             var av = new AppView({model: a});
             $('.startMessages').text('Waiting for Opponent');
             $('.setName').prop('disabled',true);
-            a.on('ready', function(){
+            a.on('update', function(){
               $('.wrapper').remove();
               $('body').append(av.render());
             });
