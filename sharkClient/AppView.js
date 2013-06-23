@@ -5,6 +5,9 @@ var AppView = Backbone.View.extend({
     this.model.on('gameOver',function(){
       this.render();
     }, this);
+    this.model.on('newPlayers', function(){
+      this.render();
+    }, this);
   },
   events: {
     'click .newGame' : function(){
@@ -24,6 +27,7 @@ var AppView = Backbone.View.extend({
     var $btn = $('<button class="newGame">New Game</button>');
     console.log("rendering from app view");
     $main = $('<div class="main"></div>');
+    $main.append(new PlayersView({collection: this.model.get('playerList')}));
     $main.append(new GameView({model: this.model.get('currGame')}).render());
     $main.append($btn);
     $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
