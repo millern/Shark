@@ -15,15 +15,27 @@ module.exports = function(_io,_sandbox){
 manager.handler = function(socket){
 
 socket.on('name', function(name){
-  athletes[name] = {name: name, socket: socket};
-  sideline.push(name);
-  console.log(sideline);
+  athletes[socket.id] = {name: name, socket: socket};
+  sideline.push({name:name, id: socket.id});
   if (sandbox){
       startGameSandBox();
   } else if (sideline.length >= 2){
-    startGame();
+    //startGame();  //don't start the game while testing the server
   }
-  console.log(ongoingGames);
+  console.log(sideline);
+  io.sockets.emit('playerList', sideline);
+});
+socket.on('disconnect', function(){
+  console.log('sideline');
+  console.log('disconnected id: ' + this.id);
+  delete athletes[socket.id];
+  for (var i = 0; i < sideline.length; i++){
+    if(sideline[i].id===socket.id){
+      sideline.splice(i,1);
+    }
+  }
+  console.log(sideline);
+  io.sockets.emit('playerList',sideline);
 });
 //handle syncing backbone models
   socket.on('update', function(data){
@@ -39,7 +51,7 @@ socket.on('name', function(name){
       sideline.push(data.player2);
     }
     if (sideline.length >= 2){
-      startGame();
+      //startGame();
     }
   });
 };

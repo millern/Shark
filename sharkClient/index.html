@@ -24,6 +24,7 @@
       //window.socket = io.connect('http://shark.jit.su')  //Deployment Code for Nodejitsu
       
       $(document).on('ready',function(){
+        console.log("document ready event triggered");
         $('.startGame').on('click', startGame);
         $('.setName').on('keyup',function(e){
           if(event.which === 13){
