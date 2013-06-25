@@ -1,6 +1,7 @@
 var gameIndex = 0,
     athletes = {},
-    sideline = [],
+    sideline = {},
+    randomQueue = [],
     ongoingGames = {},
     manager = {},
     io,
@@ -14,54 +15,61 @@ module.exports = function(_io,_sandbox){
 
 manager.handler = function(socket){
 
-socket.on('name', function(name){
-  athletes[socket.id] = {name: name, socket: socket};
-  sideline.push({name:name, id: socket.id});
-  if (sandbox){
-      startGameSandBox();
-  } else if (sideline.length >= 2){
-    //startGame();  //don't start the game while testing the server
-  }
-  console.log(sideline);
-  io.sockets.emit('playerList', sideline);
-});
-socket.on('disconnect', function(){
-  console.log('sideline');
-  console.log('disconnected id: ' + this.id);
-  delete athletes[socket.id];
-  for (var i = 0; i < sideline.length; i++){
-    if(sideline[i].id===socket.id){
-      sideline.splice(i,1);
+  socket.on('connect', function(player){
+    athletes[socket.id] = {name: player.name, socket: socket};
+    sideline[socket.id] = {name: player.name, id: socket.id};
+    if (sandbox){
+        startGameSandBox();
     }
-  }
-  console.log(sideline);
-  io.sockets.emit('playerList',sideline);
-});
-//handle syncing backbone models
+    console.log("logging the sideline", sideline);
+    io.sockets.emit('playerList', sideline);
+  });
+
+  socket.on('disconnect', function(){
+    console.log('sideline');
+    console.log('disconnected id: ' + this.id);
+    delete athletes[socket.id];
+    delete sideline[socket.id];
+    console.log(sideline);
+    io.sockets.emit('playerList',sideline);
+  });
+  socket.on('randomOpponent',function(player) {
+    console.log("adding to random queue");
+    randomQueue.push(player);
+    console.log('random queue', randomQueue);
+    if (randomQueue.length > 1){
+      startRandomGame();
+    }
+  });
+  socket.on('challengeGame', function(e){
+    //grab challenged players
+  });
+  //handle syncing backbone models
   socket.on('update', function(data){
     //rule check
     ongoingGames[data.id] = data;
-    athletes[data.player1].socket.emit('updateClient',data);
-    athletes[data.player2].socket.emit('updateClient',data);
+    athletes[data.player1.id].socket.emit('updateClient',data);
+    athletes[data.player2.id].socket.emit('updateClient',data);
   });
   socket.on('newGame',function(data){
-    if (this === athletes[data.player1].socket){
-      sideline.push(data.player1);
+    console.log("game data on new game", data);
+    if (this === athletes[data.localPlayer.id].socket){ //what is this really checking for?
+      sideline[this.id] = {name: data.localPlayer.name, id: data.localPlayer.id};
+      this.emit('newGameClicked');
     } else {
-      sideline.push(data.player2);
-    }
-    if (sideline.length >= 2){
-      //startGame();
+      throw new Error("Bad socket id");
     }
   });
 };
 
-var startGame = function(){
-  var a1 = sideline.pop();
-  var a2 = sideline.pop();
+var startRandomGame = function(){
+  var a1 = randomQueue.pop();
+  var a2 = randomQueue.pop();
+  delete sideline[a1.id];
+  delete sideline[a2.id];
   ongoingGames[gameIndex] = {id: gameIndex, player1:a1, player2:a2};
-  athletes[a1].socket.emit('updateClient', ongoingGames[gameIndex]);
-  athletes[a2].socket.emit('updateClient', ongoingGames[gameIndex]);
+  athletes[a1.id].socket.emit('updateClient', ongoingGames[gameIndex]);
+  athletes[a2.id].socket.emit('updateClient', ongoingGames[gameIndex]);
   gameIndex++;
 };
 

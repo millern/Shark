@@ -1,9 +1,9 @@
 var Player = Backbone.Model.extend({
   initialize: function(params){
-    this.set('name', params.name);
-    this.set('id', params.id);
+      this.set('id', params.id);
+      this.set('name',params.name);
   },
   challenege: function(){
-    socket.emit('challenge', this.toJSON());
+    socket.emit('challengeGame', this.toJSON());
   }
 });

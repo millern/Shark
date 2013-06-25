@@ -21,22 +21,23 @@ var Game = Backbone.Model.extend ({
       this.trigger('syncGame');
     },this);
     this.on('syncGame',function(){
+      debugger;
       socket.emit('update', this.toJSON());
     }, this);
   },
   setWord: function(player, word){
-    if (player === this.get('player1')) {
+    if (player.id === this.get('player1').id) {
       this.set('word1', word);
-    } else if (player === this.get('player2')) {
+    } else if (player.id === this.get('player2').id) {
       this.set('word2', word);
     } else {
       new Error('player is not in the game');
     }
   },
   addGuess: function(player, guess){
-    if (player === this.get('player1')) {
+    if (player.id === this.get('player1').id) {
       this.get('word2Guesses').add(new Guess({guess:guess, word:this.get('word2')}));
-    } else if (player === this.get('player2')) {
+    } else if (player.id === this.get('player2').id) {
       this.get('word1Guesses').add(new Guess({guess:guess, word:this.get('word1')}));
     } else {
       new Error('player is not in the game');
@@ -60,7 +61,7 @@ var Game = Backbone.Model.extend ({
     }
   },
   toggleTurn: function(){
-    this.set('guessing',this.get('guessing')===this.get('player1') ?
+    this.set('guessing',this.get('guessing').id === this.get('player1').id ?
                         this.get('player2') :
                         this.get('player1')
             );

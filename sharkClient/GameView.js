@@ -25,17 +25,17 @@ var GameView = Backbone.View.extend({
 
   template: function(){
     Handlebars.registerHelper('guessWord', function(game){
-      var word = game.localPlayer === game.player1 ? game.word1 : game.word2;
+      var word = game.localPlayer.id === game.player1.id ? game.word1 : game.word2;
       if (word){
-      var player = game.localPlayer === game.player1 ? game.player1 : game.player2;
-      var trail = game.guessing !== player || game.winner || !(game.word1 && game.word2) ? ' disabled />' : ' />';
+      var player = game.localPlayer.id === game.player1.id ? game.player1 : game.player2;
+      var trail = game.guessing.id !== player.id || game.winner || !(game.word1 && game.word2) ? ' disabled />' : ' />';
       return new Handlebars.SafeString('<input class="guessBox" placeholder="guess word"' + trail);
       } else {
         return new Handlebars.SafeString('');
       }
     });
     Handlebars.registerHelper('setWord', function(game){
-      var word = game.localPlayer === game.player1 ? game.word1 : game.word2;
+      var word = game.localPlayer.id === game.player1.id ? game.word1 : game.word2;
       if (!word){
       return new Handlebars.SafeString('<input class="set" placeholder="set word" />');
       } else {
@@ -46,14 +46,14 @@ var GameView = Backbone.View.extend({
       if (!(game.word1 && game.word2)){
         return "set your words";
       } else {
-      return game.winner? 'winner: ' + game.winner : game.guessing + ' is guessing.';
+      return game.winner? 'winner: ' + game.winner.name : game.guessing.name + ' is guessing.';
       }
     });
     Handlebars.registerHelper('guesses', function(guesses){
       return new Handlebars.SafeString(new GuessesView({collection: guesses}).render()[0].outerHTML);
     });
     Handlebars.registerHelper('word', function(game, side){
-      var player = game.localPlayer === game.player1 ? 'player1' : 'player2';
+      var player = game.localPlayer.id === game.player1.id ? 'player1' : 'player2';
       if ((side == "right"  && player === 'player2') || !!game.winner){
          return game.word2;
       } else if ((side === "left" && player === "player1") || !!game.winner){
@@ -70,12 +70,12 @@ var GameView = Backbone.View.extend({
         '<div class="errors">{{errors}}</div>' +
       '</section>' +
       '<section id="opponent">' +
-        '<h1>{{player1}}</h1>' +
+        '<h1>{{player1.name}}</h1>' +
         '<h2>{{word this "left"}}</h2>' +
         '{{guesses this.word1Guesses}}' +
       '</section>' +
       '<section id="player">' +
-        '<h1>{{player2}}</h1>'+
+        '<h1>{{player2.name}}</h1>'+
         '<h2>{{word this "right"}}</h2>'+
         '{{guesses this.word2Guesses}}'+
       '</section>'
