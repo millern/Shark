@@ -6,23 +6,27 @@ var Game = Backbone.Model.extend ({
     this.set('localPlayer', params.localPlayer);
     this.set('word1Guesses', params.word1Guesses ? new Guesses(params.word1Guesses) : new Guesses());
     this.set('word2Guesses', params.word2Guesses ? new Guesses(params.word2Guesses) : new Guesses());
-    this.set('guessing', params.guessing || params.player1);
+    this.set('guessing', params.guessing || Math.random() > 0.5 ? params.player1 : params.player2);
     this.set('winner',params.winner || null);
 
     this.get('word1Guesses').on('add',function(guess){
       this.handleGuess(guess,this.get("player2"));
       this.trigger('syncGame');
     },this);
+
     this.get('word2Guesses').on('add',function(guess){
       this.handleGuess(guess,this.get("player1"));
       this.trigger('syncGame');
     },this);
+
     this.on('change:word1 change:word2',function(){
       this.trigger('syncGame');
     },this);
+
     this.on('syncGame',function(){
       socket.emit('update', this.toJSON());
     }, this);
+
   },
   setWord: function(player, word){
     if (player.id === this.get('player1').id) {
