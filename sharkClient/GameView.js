@@ -49,14 +49,16 @@ var GameView = Backbone.View.extend({
       return game.winner? 'winner: ' + game.winner.name : game.guessing.name + ' is guessing.';
       }
     });
+
     Handlebars.registerHelper('guesses', function(guesses){
       return new Handlebars.SafeString(new GuessesView({collection: guesses}).render()[0].outerHTML);
     });
+
     Handlebars.registerHelper('word', function(game, side){
       var player = game.localPlayer.id === game.player1.id ? 'player1' : 'player2';
-      if ((side == "right"  && player === 'player2') || !!game.winner){
+      if (side == "right"  && (player === 'player2' || !!game.winner)) {
          return game.word2;
-      } else if ((side === "left" && player === "player1") || !!game.winner){
+      } else if (side === "left" && (player === "player1" || !!game.winner)){
         return game.word1;
       } else {
         return new Handlebars.SafeString('guess me');
