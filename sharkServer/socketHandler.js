@@ -33,6 +33,7 @@ manager.handler = function(socket){
     console.log(sideline);
     io.sockets.emit('playerList',sideline);
   });
+
   socket.on('randomOpponent',function(player) {
     console.log("adding to random queue");
     randomQueue.push(player);
@@ -41,16 +42,32 @@ manager.handler = function(socket){
       startRandomGame();
     }
   });
-  socket.on('challengeGame', function(e){
-    //grab challenged players
+
+  socket.on('sendChallenge', function(player){
+    var p1 = this.id;
+    var p2 = player.id;
+    delete sideline[p1];
+    delete sideline[p2];
+    athletes[p2].socket.emit('challengeReceived', {name: athletes[p1].name, id: p1});
   });
-  //handle syncing backbone models
+
+  socket.on('challengeAccepted', function(player){
+    startChallengeGame(player, {id: this.id, name: athletes[this.id].name});
+    console.log('challenge accepted by player');
+  });
+
+  socket.on('challengeRejected', function(player){
+    sideline[this.id] = {name: athletes[this.id], id: this.id};
+    sideline[player.id] = player;
+    console.log("challenge rejected by player");
+  });
+
   socket.on('update', function(data){
-    //rule check
     ongoingGames[data.id] = data;
     athletes[data.player1.id].socket.emit('updateClient',data);
     athletes[data.player2.id].socket.emit('updateClient',data);
   });
+
   socket.on('newGame',function(data){
     console.log("game data on new game", data);
     if (this === athletes[data.localPlayer.id].socket){ //what is this really checking for?
@@ -73,9 +90,16 @@ var startRandomGame = function(){
   gameIndex++;
 };
 
-var sandboxGame = JSON.parse('{"id":1,"player1":"tucker","player2":"nick","localPlayer":"tucker","word1Guesses":[{"guess":"barn","word":"lint","score":1},{"guess":"book","word":"lint","score":0},{"guess":"reed","word":"lint","score":0},{"guess":"repo","word":"lint","score":0}],"word2Guesses":[{"guess":"mint","word":"lynx","score":1},{"guess":"tome","word":"lynx","score":0},{"guess":"lyre","word":"lynx","score":2},{"guess":"baby","word":"lynx","score":1}],"guessing":"tucker","winner":null,"word2":"lynx","word1":"lint"}');
+var startChallengeGame = function(player1, player2){
+  ongoingGames[gameIndex] = {id: gameIndex, player1: player1, player2: player2};
+  athletes[player1.id].socket.emit('updateClient', ongoingGames[gameIndex]);
+  athletes[player2.id].socket.emit('updateClient', ongoingGames[gameIndex]);
+  gameIndex++;
+};
+
 
 var startGameSandBox = function(){
+  var sandboxGame = JSON.parse('{"id":1,"player1":"tucker","player2":"nick","localPlayer":"tucker","word1Guesses":[{"guess":"barn","word":"lint","score":1},{"guess":"book","word":"lint","score":0},{"guess":"reed","word":"lint","score":0},{"guess":"repo","word":"lint","score":0}],"word2Guesses":[{"guess":"mint","word":"lynx","score":1},{"guess":"tome","word":"lynx","score":0},{"guess":"lyre","word":"lynx","score":2},{"guess":"baby","word":"lynx","score":1}],"guessing":"tucker","winner":null,"word2":"lynx","word1":"lint"}');
   io.sockets.emit('updateClient', sandboxGame);
 };
 

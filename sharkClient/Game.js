@@ -21,7 +21,6 @@ var Game = Backbone.Model.extend ({
       this.trigger('syncGame');
     },this);
     this.on('syncGame',function(){
-      debugger;
       socket.emit('update', this.toJSON());
     }, this);
   },

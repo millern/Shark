@@ -3,7 +3,8 @@ var Player = Backbone.Model.extend({
       this.set('id', params.id);
       this.set('name',params.name);
   },
-  challenege: function(){
-    socket.emit('challengeGame', this.toJSON());
+  challenge: function(){
+    console.log("challenge event triggered");
+    this.trigger('challenge',this.toJSON());
   }
 });

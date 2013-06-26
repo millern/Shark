@@ -5,17 +5,25 @@ var AppView = Backbone.View.extend({
     this.model.on('gameOver',function(){
       this.render();
     }, this);
+
     this.model.on('newPlayers', function(){
       this.render();
     }, this);
+
     this.model.on('update', function(){
       this.render();
     },this);
+
     this.model.on('newGameClicked',function(){
       console.log("reached view");
       $('.startMessages').text('Select an opponent or choose random');
       $('.newGame').toggleClass('randomOpponent').toggleClass('newGame').text('Random Opponent');
     });
+
+    this.model.on('challengeSent', function(){
+      $('.randomOpponent').prop('disabled', true);
+    });
+
     $('body').append(this.render());
   },
   events: {
