@@ -44,7 +44,7 @@ var GameView = Backbone.View.extend({
     });
     Handlebars.registerHelper('gameState', function(game){
       if (!(game.word1 && game.word2)){
-        return "set your words";
+        return "set your word";
       } else {
       return game.winner? 'winner: ' + game.winner.name : game.guessing.name + ' is guessing.';
       }
