@@ -228,7 +228,7 @@ li{
 ----------------------------------------------- */
 
 
-.newGame, .startGame{
+.newGame, .startGame, .randomOpponent{
     margin:30px 0 10px;
     font-size: 18px;
     padding:11px 17px 10px;
@@ -246,7 +246,7 @@ li{
     box-shadow:0px 0px 3px rgba(0,0,0,0.35);
     text-shadow:0px 1px 0px rgb(255,255,255);
 }
-.newGame:hover, .startGame:hover{
+.newGame:hover, .startGame:hover, .randomOpponent:hover{
   cursor: pointer;
     background-image:-moz-linear-gradient(60% 0% -90deg,rgb(238,238,238) 0%,rgb(150,204,204) 100%); 
     background-image:-webkit-gradient(linear,60% 0%,81% 109%,color-stop(0, rgb(150,238,238)),color-stop(1, rgb(204,204,204)));
