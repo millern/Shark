@@ -8,6 +8,7 @@ var Game = Backbone.Model.extend ({
     this.set('word2Guesses', params.word2Guesses ? new Guesses(params.word2Guesses) : new Guesses());
     this.set('guessing', params.guessing || (Math.random() > 0.5 ? params.player1 : params.player2));
     this.set('winner',params.winner || null);
+    this.set('isTerminated', params.isTerminated || false);
 
     this.get('word1Guesses').on('add',function(guess){
       this.handleGuess(guess,this.get("player2"));

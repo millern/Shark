@@ -28,7 +28,7 @@ var GameView = Backbone.View.extend({
       var word = game.localPlayer.id === game.player1.id ? game.word1 : game.word2;
       if (word){
       var player = game.localPlayer.id === game.player1.id ? game.player1 : game.player2;
-      var trail = game.guessing.id !== player.id || game.winner || !(game.word1 && game.word2) ? ' disabled />' : ' />';
+      var trail = game.guessing.id !== player.id || game.winner || game.isTerminated || !(game.word1 && game.word2) ? ' disabled />' : ' />';
       return new Handlebars.SafeString('<input class="guessBox" placeholder="guess word"' + trail);
       } else {
         return new Handlebars.SafeString('');
@@ -36,17 +36,22 @@ var GameView = Backbone.View.extend({
     });
     Handlebars.registerHelper('setWord', function(game){
       var word = game.localPlayer.id === game.player1.id ? game.word1 : game.word2;
-      if (!word){
+      if (!word && !game.isTerminated){
       return new Handlebars.SafeString('<input class="set" placeholder="set word" />');
       } else {
         return new Handlebars.SafeString('');
       }
     });
     Handlebars.registerHelper('gameState', function(game){
-      if (!(game.word1 && game.word2)){
+      if (game.isTerminated){
+        return 'Opponent quit.';
+      }
+      else if ((!game.word1 && game.localPlayer.id === game.player1.id) || (!game.word2 && game.localPlayer.id === game.player2.id)){
         return "set your word";
+      } else if (!game.word1 || !game.word2){
+        return "waiting for opponent's word.";
       } else {
-      return game.winner? 'winner: ' + game.winner.name : game.guessing.name + ' is guessing.';
+      return game.winner? 'winner: ' + game.winner.name : game.isTerminated ? 'Opponent quit.' : game.guessing.name + ' is guessing.';
       }
     });
 

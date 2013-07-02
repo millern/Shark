@@ -30,8 +30,29 @@ manager.handler = function(socket){
     console.log('disconnected id: ' + this.id);
     delete athletes[socket.id];
     delete sideline[socket.id];
+    for (var game in ongoingGames){
+      if (ongoingGames[game].player1.id === socket.id){
+        ongoingGames[game].isTerminated = true;
+        athletes[ongoingGames[game].player2.id].socket.emit('updateClient', ongoingGames[game]);
+        delete ongoingGames[game];
+      } else if(ongoingGames[game].player2.id === socket.id){
+        ongoingGames[game].isTerminated = true;
+        athletes[ongoingGames[game].player1.id].socket.emit('updateClient', ongoingGames[game]);
+        delete ongoingGames[game];
+      }
+    }
     console.log(sideline);
     io.sockets.emit('playerList',sideline);
+  });
+
+  socket.on('gameTerminated', function(game){
+    ongoingGames[game.id].isTerminated = true;
+    if (socket.id === game.player1.id){
+      athletes[game.player2.id].socket.emit('updateClient', ongoingGames[game.id]);
+    }  else {
+      athletes[game.player1.id].socket.emit('updateClient', ongoingGames[game.id]);
+    }
+    delete ongoingGames[game.id];
   });
 
   socket.on('randomOpponent',function(player) {
@@ -63,15 +84,20 @@ manager.handler = function(socket){
   });
 
   socket.on('update', function(data){
-    ongoingGames[data.id] = data;
+    //need to delete games from ongoing games once someone has won, is safe becasue we emit data
+    if (data.winner){
+      delete ongoingGames[data.id];
+    } else {
+     ongoingGames[data.id] = data;
+    }
     athletes[data.player1.id].socket.emit('updateClient',data);
     athletes[data.player2.id].socket.emit('updateClient',data);
   });
 
-  socket.on('newGame',function(data){
-    console.log("game data on new game", data);
-    if (this === athletes[data.localPlayer.id].socket){ //what is this really checking for?
-      sideline[this.id] = {name: data.localPlayer.name, id: data.localPlayer.id};
+  socket.on('newGame',function(player){
+    console.log("game data on new game", player);
+    if (this === athletes[player.id].socket){ //what is this really checking for?
+      sideline[this.id] = {name: player.name, id: player.id};
       this.emit('newGameClicked');
     } else {
       throw new Error("Bad socket id");

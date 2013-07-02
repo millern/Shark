@@ -29,7 +29,11 @@ var AppView = Backbone.View.extend({
   events: {
     'click .newGame' : function(){
       console.log("rendering new game");
-      socket.emit('newGame',this.model.get('currGame').toJSON());
+      if (this.model.get('currGame') && !this.model.get('currGame').get('isTerminated')){
+        socket.emit('gameTerminated', this.model.get('currGame'));
+        this.model.set('currGame', undefined);
+      }
+      socket.emit('newGame',this.model.get('player'));
       this.render();
     },
     'click .startGame' : function(){
