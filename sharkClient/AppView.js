@@ -14,9 +14,13 @@ var AppView = Backbone.View.extend({
       this.render();
     },this);
 
+    this.model.on('change:message', function(){
+      this.render();
+    },this);
+
     this.model.on('newGameClicked',function(){
       console.log("reached view");
-      $('.startMessages').text('Select an opponent or choose random'); // TODO:  Should go in app messages property
+      this.model.set('message','Select an opponent or choose random');
       $('.newGame').toggleClass('randomOpponent').toggleClass('newGame').text('Random Opponent');
     });
 
@@ -28,16 +32,13 @@ var AppView = Backbone.View.extend({
   },
   events: {
     'click .newGame' : function(){
-      console.log("rendering new game");
-      if (this.model.get('currGame') && !this.model.get('currGame').get('isTerminated')){
+      var currGame = this.model.get('currGame');
+      if (currGame && !currGame.get('isTerminated') && !currGame.get('winner')){
         socket.emit('gameTerminated', this.model.get('currGame'));
         this.model.set('currGame', undefined);
       }
       socket.emit('newGame',this.model.get('player'));
       this.render();
-    },
-    'click .startGame' : function(){
-      this.startGame();
     },
     'keyup .setName' : function(e){
       if(e.which === 13){
@@ -47,7 +48,7 @@ var AppView = Backbone.View.extend({
     'click .randomOpponent' : function(e){
       socket.emit('randomOpponent', this.model.get('player'));
       this.model.trigger('challengeSent');
-      $('.startMessages').text('Waiting for random opponent'); //TODO:  should go in app messages property
+      this.model.set('message','Waiting for random opponent');
     }
   },
   welcomeTemplate: function(){
@@ -56,22 +57,22 @@ var AppView = Backbone.View.extend({
       );
   },
   startGame: function(){
-    console.log("starting a game");
     if ($('.setName').val() !== ''){
       this.model.set('player', {
         name: $('.setName').val(),
         id: socket.socket.sessionid
       });
       $('.wrapper').children().remove();
-      $('.startMessages').text('Waiting for Opponent'); //TODO:  Should go in app messages property
+      this.model.set('message','Select an opponent or choose random');
       $('.setName').prop('disabled',true);
     } else {
-      $('.startMessages').text('Please enter a name'); //TODO:  Should go in app messages property
+      this.model.set('message','Please enter a name');
     }
   },
   render: function(){
     this.$el.children().detach();
     var $main = $('<div class="main"></div>');
+    $main.append($('<h2 class="startMessages"></h2>').text(this.model.get('message')));
     console.log("rendering app view");
     this.$el.append(new PlayersView({collection: this.model.get('playerList')}).render());
     if(this.model.get('currGame')){
@@ -84,9 +85,8 @@ var AppView = Backbone.View.extend({
   var tmplt = this.welcomeTemplate();
   var params = this.model.toJSON();
   var $btn = $('<button class="newGame">New Game</button>');
-  $main.append(new GameView({model: this.model.get('currGame')}).render());
-  $main.append($btn);
-  $main.append($('<h2 class="startMessages"></h2>'));
+  $main.prepend($btn);
+  $main.prepend(new GameView({model: this.model.get('currGame')}).render());
   $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
   return this.$el.append(tmplt(params.player), $main,$footer);
   },
@@ -122,7 +122,6 @@ var AppView = Backbone.View.extend({
               '</ol>' +
             '</section>' +
             '{{actionButton}}' +
-            '<h2 class="startMessages"></h2>' +
           '</section>' +
           '</div>'
     );
@@ -130,7 +129,7 @@ var AppView = Backbone.View.extend({
   renderWelcome: function($main) {
     console.log('rendering welcome');
     $head = $('<header> Welcome to Shark</header>');
-    $main.append(this.rulesTemplate()());
+    $main.prepend(this.rulesTemplate()());
     $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
     return this.$el.append($head,$main,$footer);
   }

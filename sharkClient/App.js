@@ -1,7 +1,9 @@
 var App = Backbone.Model.extend({
   initialize: function(params){
     this.set('playerList', new Players([]));
+    this.set('message', ''); //Message that displays below the game
     var self = this;
+
     this.on('change:player', function(){
       socket.emit('connect', this.get('player'));
     },this);
@@ -29,8 +31,12 @@ var App = Backbone.Model.extend({
 
     socket.on('updateClient',function(data){
       data.localPlayer = self.get('player');
-      console.log("update game",data);
+      self.set('message','');
       self.set('currGame', new Game(data));
+      // Set a message when opponent disconnects
+      if (self.get('currGame').get('isTerminated')){
+        self.set('message','Opponent disconnected.  Select an opponent or choose random.');
+      }
       self.trigger("update");
     });
 
