@@ -85,6 +85,7 @@ manager.handler = function(socket){
 
   socket.on('update', function(data){
     //need to delete games from ongoing games once someone has won, is safe becasue we emit data
+    //need to figure out how we want to handle rematches with this
     if (data.winner){
       delete ongoingGames[data.id];
     } else {
