@@ -16,7 +16,7 @@ var AppView = Backbone.View.extend({
 
     this.model.on('newGameClicked',function(){
       console.log("reached view");
-      $('.startMessages').text('Select an opponent or choose random');
+      $('.startMessages').text('Select an opponent or choose random'); // TODO:  Should go in app messages property
       $('.newGame').toggleClass('randomOpponent').toggleClass('newGame').text('Random Opponent');
     });
 
@@ -46,7 +46,8 @@ var AppView = Backbone.View.extend({
     },
     'click .randomOpponent' : function(e){
       socket.emit('randomOpponent', this.model.get('player'));
-      $('.startMessages').text('Waiting for random opponent');
+      this.model.trigger('challengeSent');
+      $('.startMessages').text('Waiting for random opponent'); //TODO:  should go in app messages property
     }
   },
   welcomeTemplate: function(){
@@ -62,10 +63,10 @@ var AppView = Backbone.View.extend({
         id: socket.socket.sessionid
       });
       $('.wrapper').children().remove();
-      $('.startMessages').text('Waiting for Opponent');
+      $('.startMessages').text('Waiting for Opponent'); //TODO:  Should go in app messages property
       $('.setName').prop('disabled',true);
     } else {
-      $('.startMessages').text('Please enter a name');
+      $('.startMessages').text('Please enter a name'); //TODO:  Should go in app messages property
     }
   },
   render: function(){
