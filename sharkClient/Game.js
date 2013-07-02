@@ -112,7 +112,11 @@ var Game = Backbone.Model.extend ({
         if (data.best.length === 1 && data.best[0]===word){
           self.setWord(self.get('localPlayer'),word);
         } else {
-          self.trigger('errorMsg', "No anagrams ("+data.best.join(', ')+")");
+          if (data.best.length === 1){
+            self.trigger('errorMsg', word + " is not in the dictionary");
+          } else {
+            self.trigger('errorMsg', "No anagrams ("+data.best.join(', ')+")");
+          }
           console.log("Anagram check fails: ",data.best.join(', '));
         }
       },
