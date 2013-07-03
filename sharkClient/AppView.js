@@ -14,12 +14,11 @@ var AppView = Backbone.View.extend({
       this.render();
     },this);
 
-    this.model.on('change:message', function(){
+    this.model.on('change:message change:player', function(){
       this.render();
     },this);
 
     this.model.on('newGameClicked',function(){
-      console.log("reached view");
       this.model.set('message','Select an opponent or choose random');
       $('.newGame').toggleClass('randomOpponent').toggleClass('newGame').text('Random Opponent');
     });
@@ -40,7 +39,10 @@ var AppView = Backbone.View.extend({
       socket.emit('newGame',this.model.get('player'));
       this.render();
     },
-    'keyup .setName' : function(e){
+    'click .startGame' : function(e){  // Player sets name and clicks 'Got It'
+      this.startGame();
+    },
+    'keyup .setName' : function(e){  // Player sets name and hits return
       if(e.which === 13){
         this.startGame();
       }
@@ -50,11 +52,6 @@ var AppView = Backbone.View.extend({
       this.model.trigger('challengeSent');
       this.model.set('message','Waiting for random opponent');
     }
-  },
-  welcomeTemplate: function(){
-    return Handlebars.compile(
-      '<header>Welcome {{name}}</header>'
-      );
   },
   startGame: function(){
     if ($('.setName').val() !== ''){
@@ -71,24 +68,25 @@ var AppView = Backbone.View.extend({
   },
   render: function(){
     this.$el.children().detach();
+    var playerName = this.model.get('player') ? this.model.get('player').name : '';
+    $head = $('<header> Welcome to Shark ' + playerName + ' </header>');
     var $main = $('<div class="main"></div>');
     $main.append($('<h2 class="startMessages"></h2>').text(this.model.get('message')));
     console.log("rendering app view");
     this.$el.append(new PlayersView({collection: this.model.get('playerList')}).render());
     if(this.model.get('currGame')){
-      return this.renderGame($main);
+      return this.renderGame($head, $main);
     } else {
-      return this.renderWelcome($main);
+      return this.renderWelcome($head, $main);
     }
   },
-  renderGame: function($main) {
-  var tmplt = this.welcomeTemplate();
+  renderGame: function($head, $main) {
   var params = this.model.toJSON();
   var $btn = $('<button class="newGame">New Game</button>');
   $main.prepend($btn);
   $main.prepend(new GameView({model: this.model.get('currGame')}).render());
   $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
-  return this.$el.append(tmplt(params.player), $main,$footer);
+  return this.$el.append($head, $main,$footer);
   },
   rulesTemplate: function(){
     var model = this.model;
@@ -126,9 +124,8 @@ var AppView = Backbone.View.extend({
           '</div>'
     );
   },
-  renderWelcome: function($main) {
+  renderWelcome: function($head, $main) {
     console.log('rendering welcome');
-    $head = $('<header> Welcome to Shark</header>');
     $main.prepend(this.rulesTemplate()());
     $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
     return this.$el.append($head,$main,$footer);
