@@ -8,21 +8,18 @@ var App = Backbone.Model.extend({
       socket.emit('connect', this.get('player'));
     },this);
 
-    this.get('playerList').on('challengeApp', function(player){
-      socket.emit('challengeGame', this.toJSON());
-    },this);
-
     socket.on('newGameClicked', function(){
       self.trigger('newGameClicked');
     });
 
     socket.on('playerList', function(data){
       self.set('playerList', new Players(self.toArray(data)));
-      self.get('playerList').on('challengeApp', function(player){
+      self.get('playerList').on('challenge', function(player){
         if (socket.socket.sessionid === player.id){
           alert('you challenged yourself');
         } else {
           this.trigger('challengeSent');
+          this.set('message', 'Challenge sent to ' + player.name);
           socket.emit('sendChallenge',player);
         }
       },self);
@@ -42,10 +39,8 @@ var App = Backbone.Model.extend({
 
     socket.on('challengeReceived', function(player){
       if (confirm('You have received a challenge from ' + player.name + ".  Do you accept?")) {
-        console.log("game accepted");
         socket.emit('challengeAccepted', player);
       } else {
-        console.log("game rejected");
         socket.emit('challengeRejected', player);
       }
     });
