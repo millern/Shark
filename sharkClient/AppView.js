@@ -12,16 +12,16 @@ var AppView = Backbone.View.extend({
 
     this.model.on('update', function(){
       this.render();
-    },this);
+    }, this);
 
     this.model.on('change:message change:player', function(){
       this.render();
-    },this);
+    }, this);
 
     this.model.on('newGameClicked',function(){
       this.model.set('message','Select an opponent or choose random');
       $('.newGame').toggleClass('randomOpponent').toggleClass('newGame').text('Random Opponent');
-    });
+    }, this);
 
     this.model.on('challengeSent', function(){
       $('.randomOpponent').prop('disabled', true);
@@ -33,10 +33,12 @@ var AppView = Backbone.View.extend({
     'click .newGame' : function(){
       var currGame = this.model.get('currGame');
       if (currGame && !currGame.get('isTerminated') && !currGame.get('winner')){
+        console.log("Player clicked new game -- game terminated");
         socket.emit('gameTerminated', this.model.get('currGame'));
         this.model.set('currGame', undefined);
+      } else {
+        socket.emit('newGame',this.model.get('player'));
       }
-      socket.emit('newGame',this.model.get('player'));
       this.render();
     },
     'click .startGame' : function(e){  // Player sets name and clicks 'Got It'
@@ -82,13 +84,16 @@ var AppView = Backbone.View.extend({
   },
   renderGame: function($head, $main) {
   var params = this.model.toJSON();
-  var $btn = $('<button class="newGame">New Game</button>');
+  var btnClass = this.model.get('currGame').get('isTerminated') ? 'randomOpponent' : 'newGame';
+  var btnText = this.model.get('currGame').get('isTerminated') ? 'Random Opponent' : 'New Game';
+  var $btn = $('<button class="' + btnClass + '">' + btnText + '</button>');
   $main.prepend($btn);
   $main.prepend(new GameView({model: this.model.get('currGame')}).render());
   $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
   return this.$el.append($head, $main,$footer);
   },
-  rulesTemplate: function(){
+
+  rulesTemplate: function() {
     var model = this.model;
     Handlebars.registerHelper('actionInput',function(){
       if (!!model.get('player')){
@@ -98,7 +103,7 @@ var AppView = Backbone.View.extend({
       }
     });
     Handlebars.registerHelper('actionButton', function(){
-      if(!!model.get('player')){
+      if(!!model.get('player') || (model.get('currGame') && model.get('currGame').get('isTerminated'))){
         return new Handlebars.SafeString('<button class="randomOpponent">Random Opponent.</button>');
       } else {
         return new Handlebars.SafeString('<button class="startGame">Got it.</button>');

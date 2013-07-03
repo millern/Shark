@@ -4,7 +4,6 @@ var Player = Backbone.Model.extend({
       this.set('name',params.name);
   },
   challenge: function(){
-    console.log("challenge event triggered");
     this.trigger('challenge',this.toJSON());
   }
 });

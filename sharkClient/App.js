@@ -2,6 +2,7 @@ var App = Backbone.Model.extend({
   initialize: function(params){
     this.set('playerList', new Players([]));
     this.set('message', ''); //Message that displays below the game
+    this.set('gameTerminated',false);
     var self = this;
 
     this.on('change:player', function(){
@@ -16,7 +17,9 @@ var App = Backbone.Model.extend({
       self.set('playerList', new Players(self.toArray(data)));
       self.get('playerList').on('challenge', function(player){
         if (socket.socket.sessionid === player.id){
-          alert('you challenged yourself');
+          alert('You challenged yourself.');
+        } else if (this.get('currGame') && !this.get('currGame').get('winner')) {
+          alert('You are already in a game.  How many do you want?');
         } else {
           this.trigger('challengeSent');
           this.set('message', 'Challenge sent to ' + player.name);
@@ -50,7 +53,6 @@ var App = Backbone.Model.extend({
     for (var key in object){
       arr.push(object[key]);
     }
-    console.log(arr);
     return arr;
   }
 });
