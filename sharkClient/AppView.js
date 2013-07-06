@@ -44,6 +44,11 @@ var AppView = Backbone.View.extend({
     'click .startGame' : function(e){  // Player sets name and clicks 'Got It'
       this.startGame();
     },
+    'click .returnToLobby' : function(e) {
+      this.model.set('currGame',undefined);
+      //return player to lobby.  Lobby change will cause render.
+      socket.emit('returnToLobby', this.model.get('player'));
+    },
     'keyup .setName' : function(e){  // Player sets name and hits return
       if(e.which === 13){
         this.startGame();
@@ -53,6 +58,7 @@ var AppView = Backbone.View.extend({
       socket.emit('randomOpponent', this.model.get('player'));
       this.model.trigger('challengeSent');
       this.model.set('message','Waiting for random opponent');
+      //$('.randomOpponent').prop('disabled', true);
     }
   },
   startGame: function(){
@@ -83,14 +89,20 @@ var AppView = Backbone.View.extend({
     }
   },
   renderGame: function($head, $main) {
-  var params = this.model.toJSON();
-  var btnClass = this.model.get('currGame').get('isTerminated') ? 'randomOpponent' : 'newGame';
-  var btnText = this.model.get('currGame').get('isTerminated') ? 'Random Opponent' : 'New Game';
-  var $btn = $('<button class="' + btnClass + '">' + btnText + '</button>');
+  var $btn = this.buttonText();
   $main.prepend($btn);
   $main.prepend(new GameView({model: this.model.get('currGame')}).render());
   $footer = $('<footer><small>powered by <a href="#">eagle</a></small></footer>');
   return this.$el.append($head, $main,$footer);
+  },
+
+  buttonText: function() {
+    var currGame = this.model.get('currGame');
+    var btnClass = currGame.get('isTerminated') ? 'randomOpponent' :
+                   currGame.get('winner') ?   'returnToLobby' : 'newGame';
+    var btnText = currGame.get('isTerminated') ? 'Random Opponent' :
+                  currGame.get('winner') ?   'Return to Lobby' : 'New Game';
+    return $('<button class="' + btnClass + '">' + btnText + '</button>');
   },
 
   rulesTemplate: function() {

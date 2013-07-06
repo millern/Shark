@@ -62,6 +62,7 @@ manager.handler = function(socket){
     console.log('disconnected id: ' + this.id);
     delete athletes[socket.id];
     sl.remove(socket.id);
+    removeFromRandomQueue(this.id);
     for (var game in ongoingGames){
       if (ongoingGames[game].player1.id === socket.id){
         ongoingGames[game].isTerminated = true;
@@ -96,10 +97,14 @@ manager.handler = function(socket){
 
   socket.on('randomOpponent',function(player) {
     console.log("adding to random queue");
-    randomQueue.push(player);
-    console.log('Random Game Queue ----------', randomQueue);
-    if (randomQueue.length > 1){
-      startRandomGame();
+    if(!randomQueueContains(player.id)){
+      randomQueue.push(player);
+      console.log('Random Game Queue ----------', randomQueue);
+      if (randomQueue.length > 1){
+        startRandomGame();
+      }
+    } else {
+      console.warn('Player prevented from entering random queue twice');
     }
   });
 
@@ -125,16 +130,20 @@ manager.handler = function(socket){
     console.log("challenge rejected by player");
   });
 
-  socket.on('update', function(data){
-    //need to delete games from ongoing games once someone has won, is safe becasue we emit data
+  socket.on('returnToLobby', function(player){
+      sl.add(new Player(player.name, player.id));
+  });
+
+  socket.on('update', function(game){
+    //need to delete games from ongoing games once someone has won, is safe becasue we emit game
     //need to figure out how we want to handle rematches with this
-    if (data.winner){
-      delete ongoingGames[data.id];
+    if (game.winner){
+      delete ongoingGames[game.id];
     } else {
-     ongoingGames[data.id] = data;
+     ongoingGames[game.id] = game;
     }
-    athletes[data.player1.id].socket.emit('updateClient',data);
-    athletes[data.player2.id].socket.emit('updateClient',data);
+    athletes[game.player1.id].socket.emit('updateClient',game);
+    athletes[game.player2.id].socket.emit('updateClient',game);
   });
 
   socket.on('newGame',function(player){
@@ -153,8 +162,6 @@ var startRandomGame = function(){
   var a2 = randomQueue.pop();
   sl.remove(a1.id);
   sl.remove(a2.id);
-  // delete sideline[a1.id];
-  // delete sideline[a2.id];
   ongoingGames[gameIndex] = {id: gameIndex, player1:a1, player2:a2};
   athletes[a1.id].socket.emit('updateClient', ongoingGames[gameIndex]);
   athletes[a2.id].socket.emit('updateClient', ongoingGames[gameIndex]);
@@ -172,3 +179,16 @@ var startGameSandBox = function(){
   var sandboxGame = JSON.parse('{"id":1,"player1":"tucker","player2":"nick","localPlayer":"tucker","word1Guesses":[{"guess":"barn","word":"lint","score":1},{"guess":"book","word":"lint","score":0},{"guess":"reed","word":"lint","score":0},{"guess":"repo","word":"lint","score":0}],"word2Guesses":[{"guess":"mint","word":"lynx","score":1},{"guess":"tome","word":"lynx","score":0},{"guess":"lyre","word":"lynx","score":2},{"guess":"baby","word":"lynx","score":1}],"guessing":"tucker","winner":null,"word2":"lynx","word1":"lint"}');
   io.sockets.emit('updateClient', sandboxGame);
 };
+var removeFromRandomQueue = function(id){
+  for (var i = 0; i < randomQueue.length; i++){
+    if (randomQueue[i].id === id){
+      randomQueue.splice(i,1);
+    }
+  }
+};
+var randomQueueContains = function(id){
+  return randomQueue.some(function(item){
+    return id === item.id;
+  });
+};
+
