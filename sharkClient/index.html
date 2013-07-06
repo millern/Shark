@@ -22,10 +22,10 @@
   </head>
   <body>
     <script>
-      var port = 8080; //local testing
-      var ip = "localhost" //local testing
-      window.socket = io.connect('http://' + ip + ':8080') //Local testing
-      //window.socket = io.connect('http://shark.jit.su')  //Deployment Code for Nodejitsu
+      // var port = 8080; //local testing
+      // var ip = "localhost" //local testing
+      // window.socket = io.connect('http://' + ip + ':8080') //Local testing
+      window.socket = io.connect('http://shark.aws.af.cm')  //Deployment Code for Nodejitsu
       
       $(document).on('ready',function(){
         var a = new App();
