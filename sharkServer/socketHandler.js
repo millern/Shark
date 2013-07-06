@@ -113,7 +113,6 @@ manager.handler = function(socket){
     var p2 = player.id;
     sl.remove(p1);
     sl.remove(p2);
-    io.sockets.emit('playerList',sideline);
     athletes[p2].socket.emit('challengeReceived', {name: athletes[p1].name, id: p1});
   });
 
