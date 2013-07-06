@@ -33,9 +33,12 @@ var AppView = Backbone.View.extend({
     'click .newGame' : function(){
       var currGame = this.model.get('currGame');
       if (currGame && !currGame.get('isTerminated') && !currGame.get('winner')){
-        console.log("Player clicked new game -- game terminated");
-        socket.emit('gameTerminated', this.model.get('currGame'));
-        this.model.set('currGame', undefined);
+        // Prompt player to confirm game quit
+        if (confirm("This will end your current game.  Are you sure?")){
+          console.log("Player clicked new game -- game terminated");
+          socket.emit('gameTerminated', this.model.get('currGame'));
+          this.model.set('currGame', undefined);
+        }
       } else {
         socket.emit('newGame',this.model.get('player'));
       }
