@@ -2,3 +2,4 @@ lib/node_modules
 sharkServer/node_modules
 sharkServer/data.txt
 .DS_Store
+ignoredFiles
