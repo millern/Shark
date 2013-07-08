@@ -66,11 +66,12 @@ manager.handler = function(socket){
     for (var game in ongoingGames){
       if (ongoingGames[game].player1.id === socket.id){
         ongoingGames[game].isTerminated = true;
+        updateClient(null, ongoingGames[game].player2.id,ongoingGames[game]);
         athletes[ongoingGames[game].player2.id].socket.emit('updateClient', ongoingGames[game]);
         delete ongoingGames[game];
       } else if(ongoingGames[game].player2.id === socket.id){
         ongoingGames[game].isTerminated = true;
-        athletes[ongoingGames[game].player1.id].socket.emit('updateClient', ongoingGames[game]);
+        updateClient(ongoingGames[game].player1.id,null,ongoingGames[game]);
         delete ongoingGames[game];
       }
     }
@@ -87,12 +88,11 @@ manager.handler = function(socket){
     ongoingGames[game.id].isTerminated = true;
 
     if (socket.id === player1.id){
-      athletes[player2.id].socket.emit('updateClient', ongoingGames[game.id]);
+      updateClient(null, player2.id, ongoingGames[game.id]);
     }  else {
-      athletes[player1.id].socket.emit('updateClient', ongoingGames[game.id]);
+      updateClient(player1.id, null, ongoingGames[game.id]);
     }
     delete ongoingGames[game.id];
-
   });
 
   socket.on('randomOpponent',function(player) {
@@ -141,8 +141,7 @@ manager.handler = function(socket){
     } else {
      ongoingGames[game.id] = game;
     }
-    athletes[game.player1.id].socket.emit('updateClient',game);
-    athletes[game.player2.id].socket.emit('updateClient',game);
+    updateClient(game.player1.id, game.player2.id, game);
   });
 
   socket.on('newGame',function(player){
@@ -157,21 +156,28 @@ manager.handler = function(socket){
 };
 
 var startRandomGame = function(){
-  var a1 = randomQueue.pop();
-  var a2 = randomQueue.pop();
-  sl.remove(a1.id);
-  sl.remove(a2.id);
+  var player1 = randomQueue.pop();
+  var player2 = randomQueue.pop();
+  sl.remove(player1.id);
+  sl.remove(player2.id);
   ongoingGames[gameIndex] = {id: gameIndex, player1:a1, player2:a2};
-  athletes[a1.id].socket.emit('updateClient', ongoingGames[gameIndex]);
-  athletes[a2.id].socket.emit('updateClient', ongoingGames[gameIndex]);
+  updateClient(player1.id, player2.id, ongoingGames[gameIndex]);
   gameIndex++;
 };
 
 var startChallengeGame = function(player1, player2){
   ongoingGames[gameIndex] = {id: gameIndex, player1: player1, player2: player2};
-  athletes[player1.id].socket.emit('updateClient', ongoingGames[gameIndex]);
-  athletes[player2.id].socket.emit('updateClient', ongoingGames[gameIndex]);
+  updateClient(player1.id, player2.id, ongoingGames[gameIndex]);
   gameIndex++;
+};
+
+var updateClient = function(p1id, p2id, game) {
+  try {
+    p1id && athletes[p1id].socket.emit('updateClient', game);
+    p2id && athletes[p2id].socket.emit('updateClient', game);
+  } catch(err) {
+    console.error(err);
+  }
 };
 
 var startGameSandBox = function(){

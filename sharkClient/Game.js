@@ -40,9 +40,9 @@ var Game = Backbone.Model.extend ({
   },
   addGuess: function(player, guess){
     if (player.id === this.get('player1').id) {
-      this.get('word2Guesses').add(new Guess({guess:guess, word:this.get('word2')}));
+      this.get('word2Guesses').unshift(new Guess({guess:guess, word:this.get('word2')}));
     } else if (player.id === this.get('player2').id) {
-      this.get('word1Guesses').add(new Guess({guess:guess, word:this.get('word1')}));
+      this.get('word1Guesses').unshift(new Guess({guess:guess, word:this.get('word1')}));
     } else {
       new Error('player is not in the game');
     }
