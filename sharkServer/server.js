@@ -9,7 +9,7 @@ var express = require('express'),
 app.use('/lib', express.static(__dirname + '/../lib'));
 app.use('/', express.static(__dirname + '/../sharkClient'));
 
-var port = 8080;
+var port = 80;
 
 var sandbox = false;
 if (process.argv[2] === "sandbox"){
