@@ -17,7 +17,9 @@ var App = Backbone.Model.extend({
       self.set('playerList', new Players(self.toArray(data)));
       self.get('playerList').on('challenge', function(player){
         var currGame = this.get('currGame');
-        if (socket.socket.sessionid === player.id){
+        if (!this.get('player')){
+          alert('Set your name before challenging someone.');
+        } else if (socket.socket.sessionid === player.id){
           alert('You challenged yourself.');
         } else if (currGame && !currGame.get('winner') && !currGame.get('isTerminated')) {
           alert('You are already in a game.  How many do you want?');
