@@ -9,6 +9,7 @@ var express = require('express'),
 app.use('/lib', express.static(__dirname + '/../lib'));
 app.use('/', express.static(__dirname + '/../sharkClient'));
 
+//port 80 requires node to be run in sudo mode
 var port = 80;
 
 var sandbox = false;
@@ -16,7 +17,7 @@ if (process.argv[2] === "sandbox"){
   sandbox = true;
 }
 
-server.listen(port); //and ip
+server.listen(port);
 console.log("listening on " + port);
 
 var socketHandler = require('./socketHandler')(io,sandbox);

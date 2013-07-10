@@ -23,10 +23,7 @@
   </head>
   <body>
     <script>
-      // var ip = "localhost" //local testing
-      // window.socket = io.connect('http://' + ip + ':8080') //Local testing
-      window.socket = io.connect('http://wordsharks.co')  //Deployment Code
-      
+      window.socket = io.connect(location.protocol + "//" + location.host);
       $(document).on('ready',function(){
         var a = new App();
         var av = new AppView({model: a});
