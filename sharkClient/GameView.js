@@ -17,7 +17,7 @@ var GameView = Backbone.View.extend({
     },
     'keyup .set'  : function(event){
       if(event.which === 13){
-        this.model.checkWord($('.set').val());
+        this.model.checkWord($('.set').val().toLowerCase());
         $('.set').val('');
       }
     }
